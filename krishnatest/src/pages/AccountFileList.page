@@ -1,0 +1,6 @@
+<apex:page standardController="Account" tabStyle="Account">
+
+    <c:FileList title="{!account.Name}" customObjectName="Account"
+        objectId="{!account.id}" />
+
+</apex:page>

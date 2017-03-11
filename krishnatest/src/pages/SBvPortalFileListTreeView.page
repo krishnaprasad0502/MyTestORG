@@ -1,0 +1,6 @@
+<apex:page >
+<apex:form >
+
+<c:GeneralDocuments ></c:GeneralDocuments>
+</apex:form>
+</apex:page>

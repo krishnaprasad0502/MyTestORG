@@ -1,0 +1,97 @@
+<apex:page standardController="Account">
+    <!-- Import Necessary Jquery js File and StyleSheets-->
+    <apex:includeScript value="https://maps.googleapis.com/maps/api/js?sensor=false"/>
+    <apex:includeScript value="{!URLFOR($Resource.jQuery_map, 'js/jquery-1.6.2.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.jQuery_map, 'js/jquery-ui-1.8.16.custom.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.jqPlugin, '/jquery.blockUI.js')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.jQuery_map, 'css/ui-lightness/jquery-ui-1.8.16.custom.css')}"/>
+    <script>
+          var map,geocoder,infowindow;
+          var latLngs = [];
+          $j = jQuery.noConflict();  
+          $j(document).ready(function(){
+              initialize();
+          });
+          
+         function initialize() {
+            geocoder = new google.maps.Geocoder();
+            //initial cordinates for map init
+            var latlng = new google.maps.LatLng(37.09024, -95.712891);
+            var myOptions = {
+                zoom: 4,
+                center: latlng,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+            //load the map
+            map = new google.maps.Map($j('#map')[0], myOptions);
+            codeAddress();
+         
+         }
+         
+         /*This function codes the address using the Billing Address in the Acoount*/
+         function codeAddress(){
+              //prepare a string for geocoding
+              var address = '{!JSENCODE(Account.BillingStreet)},{!JSENCODE(Account.BillingCity)},{!JSENCODE(Account.BillingCountry)},{!JSENCODE(Account.BillingPostalCode)}';
+              console.log(address);
+              //geocode the address
+              geocoder.geocode( { 'address': address }, function(results, status) {
+                 //if it is a success
+                  if (status == google.maps.GeocoderStatus.OK) {
+                      var location = results[0].geometry.location;
+                      var marker=addMarker(location );
+                      //attach info window to the marker
+                      attachInfoWindow(marker,results[0]);
+                      
+                  }
+                  else {
+                      alert(status);
+                  }
+              }); 
+         }
+         
+         /*
+         *This method adds a marker to the provided location
+         **/
+         function addMarker(location) {
+            marker = new google.maps.Marker({
+                    position: location,
+                    map: map
+                });
+               //set the bounds and initial zoom
+            var latlngbounds = new google.maps.LatLngBounds();
+            latlngbounds.extend(marker.getPosition());
+            map.fitBounds(latlngbounds);
+            map.setZoom(14);
+            return marker;
+         }
+         
+        //this function shows the address of a marker when it is clicked
+        function attachInfoWindow(marker,address){
+             
+             google.maps.event.addListener(marker, 'click', function() {
+                 if(infowindow!=null)
+                    {
+                        infowindow.close();
+                    }
+                //HTML formated string that is used to dispaly info window over the map markers currently showing the formated address
+                var contentString = '<div class=" ui-state-active ui-corner-top" style="font-size: 1em; padding: 5px;">Address</div>'
+                                    +'<div class="ui-widget-content ui-corner-bottom" style="font-size: .9em; padding: 15px;">'+address.formatted_address+'</div>';
+                infowindow = new google.maps.InfoWindow({
+                    content: contentString
+                });
+                 infowindow.open(map,marker);
+             });
+        }
+        
+    </script>
+    <style>
+        #map {
+            
+            width:100%;
+            height:200px; 
+             
+            margin-left:1.5%;
+        }
+    </style>
+    <div id="map" class="ui-widget-content ui-corner-all ui-state-default"></div>
+</apex:page>

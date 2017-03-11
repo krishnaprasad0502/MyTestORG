@@ -1,0 +1,208 @@
+<apex:page >
+    
+     <apex:includeScript value="{!URLFOR($Resource.DynaTree, 'jquery/jquery.js' )}" />  
+        <apex:includeScript value="{!URLFOR($Resource.DynaTree, 'jquery/jquery-ui.custom.js' )}" />  
+        <apex:includeScript value="{!URLFOR($Resource.DynaTree, 'jquery/jquery.cookie.js' )}" />  
+        <apex:includeScript value="{!URLFOR($Resource.DynaTree, 'src/jquery.dynatree.js' )}" />            
+        <apex:stylesheet value="{!URLFOR($Resource.DynaTree, 'src/skin/ui.dynatree.css')}" />  
+  <!-- (Irrelevant source removed.) -->
+  
+  
+          <style type="text/css">
+
+        li.info{
+        position:relative;           /*this is the key*/
+        z-index:24;
+        background-color:#e0e0e0;    /* background colour of display text */
+        color:#000000;               /* colour of display text */
+        border:1px dotted #999;    /* border colour */
+        text-decoration:none;
+        font-style:italic;
+        }
+
+        li.info:hover {
+        z-index:25;
+        background-color:#ffff66;
+
+        }
+
+        li.info span{
+        display: none;  /* hide the span text using this css */
+        }
+
+        li.info:hover span{ /*the span will display just on :hover state*/
+        display:block;
+        position:absolute;
+        top: 1.5em;
+        left: 3em;
+        width:15em;
+        border:1px solid #ff0000; /* border colour */
+        background-color:#ffff99; /* background colour here */
+        color:#000000;         /* text colour */
+        text-align: center;
+        font-size: .8em;
+        font-style:italic;
+        z-index:30;
+        }
+
+        .images {
+        vertical-align:bottom;
+        }
+
+
+
+        </style>
+  
+  
+
+<script type='text/javascript'>
+  $(function(){
+  
+
+  
+  
+  
+    // Initialize the tree inside the <div>element.
+    // The tree structure is read from the contained <ul> tag.
+    $("#tree").dynatree({
+      title: "Programming Sample",
+      rootVisible: true,
+      autoCollapse: true,
+      onActivate: function(dtnode) {
+        $("#echoActive").text(dtnode.data.title);
+        if( dtnode.data.url )
+          window.open(dtnode.data.url, dtnode.data.target);
+          
+      },
+      onDeactivate: function(dtnode) {
+        $("#echoSelected").text("-");
+      },
+      onFocus: function(dtnode) {
+        $("#echoFocused").text(dtnode.data.title);
+      },
+      onBlur: function(dtnode) {
+        $("#echoFocused").text("-");
+      },
+      onLazyRead: function(dtnode){
+        var fakeJsonResult = [
+            { title: 'Lazy node 1', isLazy: true },
+            { title: 'Simple node 2', select: true }
+        ];
+//        alert ("Let's pretend we're using this AJAX response to load the branch:\n " + jsonResult);
+        function fakeAjaxResponse() {
+          return function() {
+            dtnode.append(fakeJsonResult);
+            // Remove the 'loading...' status:
+            dtnode.setLazyNodeStatus(DTNodeStatus_Ok);
+          };
+        }
+        window.setTimeout(fakeAjaxResponse(), 1500);
+      }
+    });
+
+    $("#btnAddCode").click(function(){
+      // Sample: add an hierarchic branch using code.
+      // This is how we would add tree nodes programatically
+      var rootNode = $("#tree").dynatree("getRoot");
+      var childNode = rootNode.append({
+        title: "Programatically addded nodes",
+        tooltip: "This folder and all child nodes were added programmatically.",
+        isFolder: true
+      });
+      childNode.append({
+        title: "Document using a custom icon",
+        icon: "customdoc1.gif"
+      });
+    });
+
+    $("#btnAddObject").click(function(){
+      // Sample: add an hierarchic branch using an array
+      var obj = [
+        { title: 'Lazy node 1', isLazy: true },
+        { title: 'Lazy node 2', isLazy: true },
+        { title: 'Folder node 3', isFolder: true,
+          children: [
+            { title: 'node 3.1' },
+            { title: 'node 3.2',
+              children: [
+                { title: 'node 3.2.1' },
+                { title: 'node 3.2.2',
+                  children: [
+                    { title: 'node 3.2.2.1' }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ];
+      $("#tree").dynatree("getRoot").append(obj);
+    });
+
+    $("#btnActiveNode").click(function(){
+      $("#tree").dynatree("getTree").activateKey("id4.3.2");
+//      $("#tree").dynatree("getTree").getNodeByKey("id4.3.2").activate();
+    });
+
+    $("#btnShowActive").click(function(){
+      var dtnode = $("#tree").dynatree("getActiveNode");
+      if( dtnode )
+        alert("Currently active: " + dtnode.data.title);
+      else
+        alert("No active node.");
+    });
+  });
+</script>
+
+<!-- <apex:form >
+
+<apex:pageBlock title="Pluribus Networks Documents" id="display"><p>
+<apex:outputLink value="http://www.pluribusnetworks.com.php53-17.ord1-1.websitetestlink.com/pn_pdf/index.php?id=1" target="_blank"> PN_F64_Series_HIG.pdf</apex:outputLink></p><p>
+<apex:outputLink value="http://www.pluribusnetworks.com.php53-17.ord1-1.websitetestlink.com/pn_pdf/index.php?id=2"  target="_blank"> PN_F64_Series_Datasheet_0.5.pdf</apex:outputLink></p><p>
+<apex:outputLink value="http://www.pluribusnetworks.com.php53-17.ord1-1.websitetestlink.com/pn_pdf/index.php?id=3"  target="_blank" > PN_F64_Series_Datasheet.pdf</apex:outputLink></p><p>
+<apex:outputLink value="http://www.pluribusnetworks.com.php53-17.ord1-1.websitetestlink.com/pn_pdf/index.php?id=4"  target="_blank" > PN_vManage_Fabric_Admin_Guide_1.2.pdf</apex:outputLink></p><p>
+<apex:outputLink value="http://www.pluribusnetworks.com.php53-17.ord1-1.websitetestlink.com/pn_pdf/index.php?id=5"  target="_blank" > PN_F64_Series_Rackmount_Instructions(GA).pdf</apex:outputLink></p><p>
+<apex:outputLink value="http://www.pluribusnetworks.com.php53-17.ord1-1.websitetestlink.com/pn_pdf/index.php?id=6"  target="_blank" >PN_nvOS_CLI_Primer_1.2.pdf</apex:outputLink></p><p>
+<apex:outputLink value="http://www.pluribusnetworks.com.php53-17.ord1-1.websitetestlink.com/pn_pdf/index.php?id=7"  target="_blank" > PN_nvOS_CLI_Ref_Guide.pdf</apex:outputLink></p><p>
+<apex:outputLink value="http://www.pluribusnetworks.com.php53-17.ord1-1.websitetestlink.com/pn_pdf/index.php?id=8"  target="_blank" > PN_F64_Series_QuickStart.pdf</apex:outputLink></p><p>
+<apex:outputLink value="http://www.pluribusnetworks.com.php53-17.ord1-1.websitetestlink.com/pn_pdf/index.php?id=9"  target="_blank" > nvOS-api-c.pdf</apex:outputLink></p><p>
+<apex:outputLink value="http://www.pluribusnetworks.com.php53-17.ord1-1.websitetestlink.com/pn_pdf/index.php?id=10" target="_blank" > nvOS-api-java.pdf</apex:outputLink></p>
+</apex:pageBlock>
+</apex:form> -->
+<body>
+
+
+<div id="tree">
+    <ul>  
+        <li class="expanded folder" >Pluribus Networks nvOS Configuration Guide
+            <ul>  
+     
+                <li TITLE="PN_F64_Series_Rackmount_Instructions" >F64 Series Rackmount Instructions(GA)<img   src = "{!URLFOR($Resource.Downloadimage, 'pdfDownload.png' )}" onclick ="window.open('http://www.pluribusnetworks.com.php53-17.ord1-1.websitetestlink.com/pn_pdf/index.php?id=5');" /></li>
+                <li TITLE="nvOS-api-java.pdf" STYLE="BORDER: #558844 1px solid;WIDTH:200px;HEIGHT: 40px">nvOS api java<img style="WIDTH:15px; HEIGHT: 15px" src = "{!URLFOR($Resource.Downloadimage, 'pdfDownload.png' )}" onclick ="window.open('http://www.pluribusnetworks.com.php53-17.ord1-1.websitetestlink.com/pn_pdf/index.php?id=10');" /></li>
+                <li TITLE="nvOS Log Messages 2.0" STYLE="BORDER: #558844 1px solid;WIDTH:200px;HEIGHT: 40px">nvOS Log Messages 2.0<img style="WIDTH:15px; HEIGHT: 15px" src = "{!URLFOR($Resource.Downloadimage, 'pdfDownload.png' )}" onclick ="window.open('http://www.pluribusnetworks.com.php53-17.ord1-1.websitetestlink.com/pn_pdf/index.php?id=11');" /></li>      
+                <li TITLE="PN-HIG-F64-v20revb.pdf" STYLE="BORDER: #558844 1px solid;WIDTH:200px;HEIGHT: 40px">PN HIG F64 v20revb<img style="WIDTH:15px; HEIGHT: 15px" src = "{!URLFOR($Resource.Downloadimage,  'pdfDownload.png' )}" onclick ="window.open('http://www.pluribusnetworks.com.php53-17.ord1-1.websitetestlink.com/pn_pdf/index.php?id=13');" /></li>
+                <li TITLE="nvOS Rel Notes 2.0" STYLE="BORDER: #558844 1px solid;WIDTH:200px;HEIGHT: 40px">nvOS Rel Notes 2.0<img style="WIDTH:15px; HEIGHT: 15px" src = "{!URLFOR($Resource.Downloadimage,  'pdfDownload.png' )}" onclick ="window.open('http://www.pluribusnetworks.com.php53-17.ord1-1.websitetestlink.com/pn_pdf/index.php?id=12');" /></li>
+                <li TITLE="nvOS Cmd Ref 2.0" STYLE="BORDER: #558844 1px solid;WIDTH:200px;HEIGHT: 40px">nvOS Cmd Ref 2.0<img style="WIDTH:15px; HEIGHT: 15px" src = "{!URLFOR($Resource.Downloadimage, 'pdfDownload.png')}" onclick ="window.open('http://www.pluribusnetworks.com.php53-17.ord1-1.websitetestlink.com/pn_pdf/index.php?id=14');" /></li>
+                <li TITLE="nvOS Configuration Guide Version 2.0" STYLE="BORDER: #558844 1px solid;WIDTH:200px;HEIGHT: 40px">nvOS Configuration Guide Version 2.0<img style="WIDTH:15px; HEIGHT: 15px" src = "{!URLFOR($Resource.Downloadimage,  'pdfDownload.png' )}" onclick ="window.open('http://www.pluribusnetworks.com.php53-17.ord1-1.websitetestlink.com/pn_pdf/index.php?id=15');" /></li>
+                <li TITLE="nvos QSG 2.0a" STYLE="BORDER: #558844 1px solid;WIDTH:200px;HEIGHT: 40px">nvos QSG 2.0a<img style="WIDTH:15px; HEIGHT: 15px" src = "{!URLFOR($Resource.Downloadimage,  'pdfDownload.png' )}" onclick ="window.open('http://www.pluribusnetworks.com.php53-17.ord1-1.websitetestlink.com/pn_pdf/index.php?id=16');" /></li>
+                <li TITLE="vManage admin 2.0" STYLE="BORDER: #558844 1px solid;WIDTH:200px;HEIGHT: 40px">vManage admin 2.0<img style="WIDTH:15px; HEIGHT: 15px" src = "{!URLFOR($Resource.Downloadimage,  'pdfDownload.png' )}" onclick ="window.open('http://www.pluribusnetworks.com.php53-17.ord1-1.websitetestlink.com/pn_pdf/index.php?id=17');" /></li>                     
+                
+                <li TITLE="HTML Config Guide" STYLE="BORDER: #558844 1px solid;WIDTH:200px;HEIGHT: 40px" class="folder" data="url: 'http://www.pluribusnetworks.com.php53-17.ord1-1.websitetestlink.com/pn_pdf/multi-format%20help%20files/index.htm'">HTML Config Guide</li>
+                
+                
+
+            </ul>
+        </li>
+    </ul>
+</div>
+
+
+
+
+
+<!--<li class="info" >display text<span>Tool Tip Text Here</span></li> -->
+                   
+
+<!-- (Irrelevant source removed.) -->
+</body>
+</apex:page>

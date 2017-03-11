@@ -1,0 +1,6 @@
+<apex:page standardController="General_Dcouments__c"  >
+
+    <c:FileList title="{!General_Dcouments__c.Name}" customObjectName="General_Dcouments__c"
+        objectId="{!General_Dcouments__c.id}" />
+
+</apex:page>

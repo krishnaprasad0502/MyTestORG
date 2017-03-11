@@ -1,0 +1,155 @@
+<apex:page id="page1" controller="clsSearchContact">
+<apex:form >
+<script>
+var flag=0;
+var SelectConId1='';
+function checkAll(cb)
+{    
+    flag=0;
+    SelectConId1='';
+    var inputElem = document.getElementsByTagName("input");
+    for(var i=1; i<inputElem.length; i++)
+    {
+        if(inputElem[i].id.indexOf("checkedone")!=-1)
+        {
+            inputElem[i].checked = cb.checked;
+            flag=flag+1;
+            SelectConId1=SelectConId1+inputElem[i].name+',';
+        }
+    }
+    if(cb.checked!=true)
+    {
+        SelectConId1="";
+        flag=0;
+    } 
+    alert(SelectConId1);
+  
+}
+
+function checkone(cb,conid)
+{
+  
+  SelectConId1='';
+   var inputElem = document.getElementsByTagName("input");
+    for(var i=1; i<inputElem.length; i++)
+    {
+        if(inputElem[i].id.indexOf("checkedone")!=-1)
+        {
+            if(inputElem[i].name!=cb.name)
+            {
+            SelectConId1=SelectConId1+inputElem[i].name;
+                inputElem[i].checked=false;
+                
+            }
+        }
+    }
+  
+  
+}
+
+function search_element()
+{
+    //alert('hello');
+    var element=document.getElementById("searchtext").value;
+   // alert(element);
+    searchelement(element);
+    return false;
+}
+function addtolist()
+{
+   
+    if((SelectConId1.length)<=1)
+    {
+        alert('Please select atleast one contact');
+        return false;
+    }
+    else
+    {
+        addtolistcontact();
+    }
+}
+
+function addtolistcontact()
+{
+   
+      
+    
+}
+
+
+
+
+
+
+
+
+
+
+function closethis()
+{
+   
+}
+</script>
+
+
+    <apex:pageblock tabstyle="account">
+     <apex:pageBlockSection title="Select Multiple Contact"   collapsible="false" columns="1">
+     <Apex:pageBlock >
+            
+            <apex:pageBlockButtons location="both" >
+            <apex:outputLabel >&nbsp;</apex:outputLabel>
+                <apex:commandButton onclick="return addtolist();" value="Add to List"/>
+                <Apex:commandButton value="Done"  onclick="return closethis()"/>
+            </apex:pageBlockButtons>
+            <apex:outputPanel >
+                <input type="text" id="searchtext"/>
+                <apex:actionFunction immediate="true"  action="{!searchcontact}" reRender="pbtable" name="searchelement">
+                    <apex:param name="assignserach" value="" assignTo="{!searchfiled}"/>
+                </apex:actionFunction>
+                <apex:commandButton value="search" onclick="return search_element();" />
+            </apex:outputPanel>
+            <apex:pageBlockTable value="{!getconlist}" var="cc" id="pbtable">
+                <apex:column >
+                    <!--<apex:facet name="header"> 
+                        <input type="checkbox" id="main" onclick="return checkAll(this)"  /> 
+                        
+                    </apex:facet>-->
+                     <input type="checkbox" name="{!cc.id}" id="checkedone"  onclick="return checkone(this,'{!cc.id}')"  /> 
+                    </apex:column>
+                <div id="{!cc.id}">
+                <apex:column >
+                    <apex:facet name="header" >Name</apex:facet>
+                    {!cc.name}
+                        </apex:column>
+                <apex:column >
+                    <apex:facet name="header" >Title</apex:facet>
+                    {!cc.Title}
+                </apex:column>
+
+                  <apex:column >
+                     <apex:facet name="header" >Phone</apex:facet>
+                    {!cc.phone}
+                </apex:column>
+                  <apex:column >
+                    <apex:facet name="header" >Email</apex:facet>
+                    {!cc.email}
+                </apex:column>
+
+                <apex:column >
+                    <apex:facet name="header" >Account/Company</apex:facet>
+                    {!cc.account.name}
+                </apex:column>
+                
+                <apex:column >
+                    <apex:facet name="header" >Owner</apex:facet>
+                    {!cc.owner.name}
+                </apex:column>
+                </div>
+            </apex:pageBlockTable>
+      
+        
+       </Apex:pageBlock>
+       </apex:pageBlockSection>
+    </apex:pageblock>
+    </apex:form>
+</apex:page>

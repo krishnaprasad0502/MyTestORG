@@ -1,0 +1,32 @@
+<apex:page controller="DeletingCheckedRowsController">
+<apex:pagemessages />
+    <apex:form >
+        <apex:pageBlock id="pg">
+           <apex:pageBlockTable value="{!listWrapper}" var="w">
+               <apex:column > 
+                 
+                   <apex:inputCheckbox value="{!w.checked}"/>
+                  
+               </apex:column>
+               
+                <apex:column headervalue="Set as Primary">  
+                <input type="radio" name="Account" value="{!w.checked}" />                    
+    </apex:column>
+               
+                <apex:column headervalue="Set as secobry">  
+                <apex:selectRadio value="{!w.checked}">
+
+            
+
+            </apex:selectRadio>
+  </apex:column>
+               
+               <apex:column value="{!w.emp.Name}"/>
+               
+            </apex:pageBlockTable> 
+            <apex:pageBlockButtons >
+                <apex:commandButton value="Delete" action="{!del}"/>
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

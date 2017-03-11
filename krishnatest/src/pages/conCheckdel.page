@@ -1,0 +1,34 @@
+<apex:page StandardController="Contact" extensions="Listcontactcontroller">
+    <script>
+        function confirmDelete() {
+        var isDelete = confirm("Are you sure you wish to Delete?");
+        if (isDelete) return true;
+        return false;
+        }
+    </script>
+     
+    <apex:pageMessages />
+    <apex:form id="theForm">
+        <apex:pageBlock Title="ALL CONTACTS">
+        <apex:commandButton value="mass delete" action="{!massdelete}" style="color:blue;" id="massdelete" onclick="return confirmDelete()"/>
+        <!--<apex:commandButton value="Save" action="{!tosave}" id="saveButton" />-->
+
+        <apex:outputPanel style="float:middle">
+        <apex:pageBlockTable value="{!Contacts}" var="c" cellpadding="2" border="1" rowClasses="odd,even" styleClass="tableClass" id="opp_table">
+            <apex:column headerValue="All contact Name" styleClass="showline">
+                <apex:inputCheckbox value="{!c.selected}">
+
+                <apex:actionSupport event="onclick" action="{!getSelected}" rerender="Selected_PBS"/>
+
+                </apex:inputCheckbox> &nbsp;
+                
+                    <!--<apex:commandLink value="{!c.con.Name}" style="text-decoration:none;" action="{!Go}" title="for contact details">
+                    <apex:param name="conId" value="{!c.con.id}" />
+                    </apex:commandLink>-->
+               
+            </apex:column>
+            </apex:pageblocktable>
+        </apex:outputPanel>
+    </apex:pageblock>
+    </apex:form>
+</apex:page>

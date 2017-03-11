@@ -1,0 +1,81 @@
+<apex:page standardController="Account" extensions="Ctrl_Geocoding">
+     
+    <style>
+        #map-canvas{
+            height: 400px;
+        }
+        input[type="text"]{
+            width: 740px;
+        }
+    </style>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <apex:form >
+        <apex:outputpanel layout="block" id="searchSection">
+            <input id="addr" type="text" value="{!address}" />
+            <input type="button" value="Search" onclick="searchAddr()" class="btn"/>
+            <input type="button" value="Save" onclick="saveLocation()" class="btn"/>
+        </apex:outputpanel>
+        <div id="map-canvas"></div>
+        <apex:actionfunction name="saveAccount" oncomplete="alert('Geolocation Saved')" action="{!saveAccount}" rerender="searchSection" />
+        <apex:inputtext value="{!acc.BillingLatitude}" styleClass="latitudeField" style="display:none"/>
+        <apex:inputtext value="{!acc.BillingLongitude}" styleClass="longitudeField" style="display:none"/>
+        <script>
+            var marker = null;
+            var map = null;
+             
+            function initialize() {
+                 
+                var positioninit = new google.maps.LatLng('{!acc.BillingLatitude}', '{!acc.BillingLongitude}');
+                 
+                var mapOptions = {
+                    zoom: 4,
+                    center: positioninit,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                };
+                 
+                map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+                if('{!acc.BillingLatitude}' != '' && '{!acc.BillingLongitude}' != ''){
+                    placeCoordinate(positioninit);
+                }
+            }
+             
+            google.maps.event.addDomListener(window, 'load', initialize);
+         
+            function saveLocation(){
+                $('.latitudeField').val(marker.position.lat());
+                $('.longitudeField').val(marker.position.lng());
+                saveAccount();
+            }
+     
+            function showLocation(){
+                alert('Latitude: ' + marker.position.lat() + '\nLongitude: ' + marker.position.lng());
+            }
+     
+            function searchAddr(){
+                var addrInput = document.getElementById('addr');
+                new google.maps.Geocoder().geocode( { 'address': addrInput.value}, function(results, status) {
+                  if (status == google.maps.GeocoderStatus.OK) {
+                    placeCoordinate(results[0].geometry.location);
+                    addrInput.value = results[0].formatted_address;
+                  } else {
+                    alert("Geocode was not successful for the following reason: " + status);
+                  }
+                });
+            }
+         
+            function placeCoordinate(location){
+                if(!marker){
+                    marker = new google.maps.Marker({
+                        map: map,
+                        draggable: true
+                    });
+                    google.maps.event.addListener(marker, 'click', showLocation);
+                }
+                marker.setPosition(location);
+                map.setCenter(location);
+                map.setZoom(14);
+            }
+      </script>
+    </apex:form>
+</apex:page>

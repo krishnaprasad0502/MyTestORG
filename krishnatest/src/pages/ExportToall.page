@@ -1,0 +1,12 @@
+<apex:page controller="ExportToExcelMultipleSheets" sidebar="false" contenttype="application/vnd.ms-excel#MultiSheetExcel.xls" cache="true">
+        <apex:pageBlock >
+            <apex:pageBlockSection title="Last 30 Days Cases" id="openCasesBlock" columns="1" collapsible="false">
+                <apex:pageBlockTable value="{!CaseList}" var="c" id="openCasesBlock">
+                    <apex:column value="{!c.CaseNumber}" />
+                    <apex:column value="{!c.id}" />
+                    <apex:column value="{!c.CreatedDate}" /> 
+                 </apex:pageBlockTable>  
+            </apex:pageBlockSection>
+        </apex:pageBlock>  
+
+</apex:page>

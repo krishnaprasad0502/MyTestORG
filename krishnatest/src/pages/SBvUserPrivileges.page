@@ -1,0 +1,103 @@
+<apex:page controller="SBcUserPrivileges" sidebar="false">
+    <apex:form >
+        <apex:pageMessages />
+        <apex:outputPanel rendered="{!pageRender}">
+            <apex:pageBlock title="User Privileges">
+                <apex:panelGrid columns="3" id="theGrid" style="align:center;">
+                    <apex:outputLabel value="Available Groups" />
+                    <br />
+                    <apex:outputLabel value="Enabled Groups" />
+                    <apex:selectList value="{!publicGroups1}" multiselect="true"
+                        size="6" style="width:100%" id="leftList">
+
+                        <apex:selectOptions value="{!items}" />
+                    </apex:selectList>
+                    <apex:panelGroup id="theGroup">
+                        <apex:panelGrid columns="1" id="theGridTwo">
+                            <br />
+                            <center>
+                                Add<br /> <img title="Add" class="rightArrowIcon" alt="Add"
+                                    src="/s.gif" onclick="moveLeftToRight()" /><br /> <img
+                                    title="Remove" class="leftArrowIcon" alt="Remove" src="/s.gif"
+                                    onclick="moveRightToLeft()" /><br />Remove
+                            </center>
+                        </apex:panelGrid>
+                    </apex:panelGroup>
+                    <apex:selectList value="{!publicGroups}" multiselect="true"
+                        size="6" style="width:100%" id="rightList">
+
+                        <apex:selectOptions value="{!items1}" />
+                    </apex:selectList>
+                    <apex:inputHidden id="allGroups" value="{!allGroups}" />
+
+                </apex:panelGrid>
+                <apex:pageBlockButtons location="bottom">
+                    <apex:commandButton value="Save" action="{!save}"
+                        onclick="selectListValues()" disabled="{!disableButtons}" />
+
+                </apex:pageBlockButtons>
+                <script type="text/javascript">          
+            function moveLeftToRight(){  
+                var selectbox1 = document.getElementById('{!$Component.leftList}');
+                 
+                var newstringValue;
+               
+                for(var i=selectbox1.options.length-1;i>=0;i--){
+                    if(selectbox1.options[i].selected){
+                       
+                        var value = document.getElementById('{!$Component.leftList}').options[i].value;
+                        var txt = document.getElementById('{!$Component.leftList}').options[i].text; 
+                                                   
+                        addOption(document.getElementById('{!$Component.rightList}'),txt,value);
+                    }            
+                }          
+               
+                removeOption(document.getElementById('{!$Component.leftList}'));
+            }
+            function selectListValues(){
+                 var stringValue;
+                var selectbox  = document.getElementById('{!$Component.rightList}'); 
+                if(selectbox.options.length>0){ 
+                    for(var i=0;i<selectbox.options.length;i++){
+                        var val = selectbox.options[i].value;                        
+                        if(i==0){
+                            stringValue=val;
+                        }else{
+                            stringValue=stringValue+","+val;
+                        }     
+                    } 
+                    document.getElementById('{!$Component.allGroups}').value=stringValue;
+                }else{
+                    document.getElementById('{!$Component.allGroups}').value="";
+                }  
+            }
+            function moveRightToLeft(){
+                var selectbox1 = document.getElementById('{!$Component.rightList}');
+                           
+                for(var i=selectbox1.options.length-1;i>=0;i--){
+                    if(selectbox1.options[i].selected){
+                        var value = document.getElementById('{!$Component.rightList}').options[i].value;
+                        var txt = document.getElementById('{!$Component.rightList}').options[i].text;                            
+                        addOption(document.getElementById('{!$Component.leftList}'),txt,value);
+                    }            
+                }              
+                removeOption(document.getElementById('{!$Component.rightList}'));
+            }
+            function addOption(selectbox,text,value){
+                var optn = document.createElement("OPTION");
+                optn.text = text;
+                optn.value = value;
+                selectbox.options.add(optn);
+            }
+            function removeOption(selectbox){
+                var i;
+                for(i=selectbox.options.length-1;i>=0;i--){
+                    if(selectbox.options[i].selected)
+                    selectbox.remove(i);
+                }
+            }
+        </script>
+            </apex:pageBlock>
+        </apex:outputPanel>
+    </apex:form>
+</apex:page>

@@ -1,0 +1,14 @@
+<apex:page controller="AllObjDynamicDisplayClass" sidebar="false">
+    <apex:form >
+        <apex:actionFunction action="{!fields}" name="fun"/>
+        <apex:pageBlock >
+            <apex:pageblockSection ></apex:pageblockSection>
+             <apex:SelectList value="{!selectedObj}" size="1" onchange="fun()">
+                 <apex:selectOptions value="{!items}"/>
+             </apex:SelectList>
+                  <apex:pageBlocktable value="{!Fields}" var="f" >
+              <apex:column headerValue="{!selectedObj} Field Names" value="{!f}"/>
+              </apex:pageBlocktable>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

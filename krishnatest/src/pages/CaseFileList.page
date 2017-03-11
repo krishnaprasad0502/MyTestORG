@@ -1,0 +1,6 @@
+<apex:page standardController="Case" tabStyle="Case">
+
+    <c:FileList title="{!case.CaseNumber}" customObjectName="Case"
+        objectId="{!case.id}" />
+
+</apex:page>

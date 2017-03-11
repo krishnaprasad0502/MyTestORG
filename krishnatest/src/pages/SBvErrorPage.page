@@ -1,0 +1,5 @@
+<apex:page sidebar="false" showHeader="true">
+    <apex:pageMessage summary="You do not have the required permission to access Cloud Storage. Please contact your Administrator."
+        severity="error" strength="3" />
+    <apex:pageMessages />
+</apex:page>

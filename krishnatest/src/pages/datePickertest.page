@@ -1,0 +1,9 @@
+<apex:page controller="datePicker" id="mypage">
+    <apex:form >
+     <apex:outputPanel id="theOP">
+         Date: <apex:inputText value="{!outputdate}" size="10" id="demo" onfocus="DatePicker.pickDate(false, this , false);" /> 
+   <apex:commandButton action="{!displayDate}" value="dispdate" rerender="theOP"/>
+         {!outputdate}
+     </apex:outputPanel>
+    </apex:form>
+</apex:page>

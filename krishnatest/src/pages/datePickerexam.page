@@ -1,0 +1,42 @@
+<apex:page controller="ExamplePageController" docType="html-5.0">
+<style type="text/css">
+.dateFormat {
+   display: none;
+}
+</style>
+   <script>
+  (function() {
+    var windowOnload = window.onload;
+   
+  }());
+  </script>
+   <apex:form >
+      <apex:pageBlock mode="maindetail">
+         <apex:pageBlockSection >
+ 
+            <!-- on change works for the native date field -->
+            <apex:pageBlockSectionItem >
+               <apex:outputLabel value="{!$ObjectType.Contact.Fields.Birthdate.Label}" />
+               <apex:outputPanel >
+                 
+                  <apex:outputPanel id="PanelBirthdateDOW" style="margin-left:5px;">{!BirthdateDOW}</apex:outputPanel>
+               </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+ 
+            <!-- onchange did not work with the text field. onblur will show the day of week when the element changes focus -->
+            <apex:pageBlockSectionItem >
+               <apex:outputLabel value="String Date" />
+               <apex:outputPanel >
+                  <apex:inputText value="{!StringDate}" id="TheStringDate">
+                     <apex:actionSupport event="onfocus" onsubmit="DatePicker.pickDate(false, this, false);" rerender="nothing" />
+                     <apex:actionSupport event="onblur" action="{!FindStringDateDOW}" rerender="PanelStringDateDOW" />
+                  </apex:inputText>
+                  <apex:outputPanel id="PanelStringDateDOW" style="margin-left:5px;">{!StringDateDOW}</apex:outputPanel>
+               </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+ 
+         </apex:pageBlockSection>
+      </apex:pageBlock>
+   </apex:form>
+ 
+</apex:page>

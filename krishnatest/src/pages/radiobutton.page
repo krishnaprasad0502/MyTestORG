@@ -1,0 +1,33 @@
+<apex:page controller="test_example">
+<apex:form id="f1">
+ <apex:selectRadio value="{!year_num}" id="ch">
+            <apex:selectOption itemValue="2010" itemLabel="2010" />
+            <apex:selectOption itemValue="2011" itemLabel="2011" />
+            </apex:selectRadio>
+            
+ <apex:CommandLink onclick="return validate()"  action="{!myaction}" target="_blank">
+        <font color="brown" size="3">Run Report</font>
+        </apex:CommandLink> 
+
+<script language="javascript">
+                       
+    function validate()
+    {                                                
+        try 
+        { 
+            var x = 1;  // This is the first radio button, 2nd one is 1, 3rd is 2 so and so forth......           
+            var myText = "{!$Component.ch}" + ":" + x;            
+            alert("Hi " + document.getElementById(myText).value);                                           
+            return false;                            
+        }                            
+        catch(e)
+        {                                                        
+            alert(e);                                                        
+            return false;                                               
+        }                          
+    }  
+          
+</script>   
+
+</apex:form>
+</apex:page>

@@ -1,0 +1,33 @@
+<apex:page showHeader="false" sidebar="false">
+    <apex:pageMessages />
+    <apex:sectionHeader title="Help for Account Creation" />
+    <apex:pageBlock >
+        <apex:pageBlockSection columns="1">
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Organization Name" for="orgName" />
+                <apex:outputText value="Name of the Organization to which the user belongs to."
+                    id="orgName" />
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Bucket Name" for="bucketName" />
+                <apex:outputText value="Name of the bucket under which the folder needs to be created for storing files."
+                    id="bucketName" />
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Access Key" for="akey" />
+                <apex:outputText value="The Amazon's Access Key for accessing the Amazon's Storage Services(S3)."
+                    id="akey" />
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Secret Key" for="skey" />
+                <apex:outputText value="The Amazon's Secret Key for accessing the Amazon's Storage Services(S3)."
+                    id="skey" />
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Encryption Key" for="ekey" />
+                <apex:outputText value="The encryption value used for encrypting/decrypting the files stored in Amazon S3."
+                    id="ekey" />
+            </apex:pageBlockSectionItem>
+        </apex:pageBlockSection>
+    </apex:pageBlock>
+</apex:page>

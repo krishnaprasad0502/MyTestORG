@@ -1,0 +1,192 @@
+<apex:page controller="APPScQuickConvertLead1">
+<script>
+var flag=0;
+var SelectConId1='';
+function checkoneCon(cb,conid)
+{  
+  SelectConId1='';
+   var inputElem = document.getElementsByTagName("input");
+   
+    for(var i=1; i<inputElem.length; i++)
+    {
+        if(inputElem[i].id.indexOf("checkedoneCon")!=-1)
+        {
+            if(inputElem[i].name!=cb.name)
+            {
+            SelectConId1=SelectConId1+inputElem[i].name;
+                inputElem[i].checked=false;
+                
+            }
+        }
+    }  
+}
+
+function checkoneAcc(cb,conid)
+{
+  SelectConId1='';
+   var inputElem = document.getElementsByTagName("input");
+    for(var i=1; i<inputElem.length; i++)
+    {
+        if(inputElem[i].id.indexOf("checkedoneAcc")!=-1)
+        {
+            if(inputElem[i].name!=cb.name)
+            {
+            SelectConId1=SelectConId1+inputElem[i].name;
+                inputElem[i].checked=false;
+                
+            }
+        }
+    }
+  
+  
+}
+
+  
+  
+   function validate()
+        {
+            if (true)
+            {    
+                var msgCon;
+                msgCon= 'false';
+                var msgAcc;
+                msgAcc= 'false';
+                //alert ('ok');
+                  var inputElem = document.getElementsByTagName("input");
+                   //alert ('ok--'+inputElem.length);
+                    for(var i=1; i<inputElem.length; i++)
+                    {    
+                        if(inputElem[i].id.indexOf("checkedoneCon")!= -1)
+                        {
+                            //alert ('ok--'+inputElem[i].id.indexOf("checkedoneCon"));
+                            if(inputElem[i].checked){
+                                //alert ('ok-+con-'+inputElem[i].checked);
+                                msgCon= 'true';
+                            }
+                            
+                       }
+                       if(inputElem[i].id.indexOf("checkedoneAcc")!= -1 )
+                        {
+                            //alert ('ok--'+inputElem[i].id.indexOf("checkedoneAcc"));
+                            if(inputElem[i].checked){
+                                //alert ('ok-+acc-'+inputElem[i].checked);
+                                msgAcc= 'true';
+                            }
+                            
+                       }
+                        
+                      
+                     } 
+                     //alert(msg);
+                     if(msgCon== 'true' && msgAcc== 'true'){
+                          doProcessSelection();
+                          //alert('please sel-----------tact');                     
+                     } 
+                     else{
+                         
+                          alert('please select at least one Account and one Contact');
+                     } 
+                
+            }
+            else
+            {
+                // something else
+            }
+        }
+</script>
+
+
+    <apex:form >
+    
+
+        <apex:pageBlock >
+       
+       
+        <apex:pageBlockButtons location="top" >
+        <table>
+                                        <tr>
+                                            <td style="padding-left:50px;vertical-align:middle;" valign="middle">
+            <input type="button" value="Create Opportunity" class="btn" onclick="validate();" style="width:150px" />
+            <apex:actionFunction name="doProcessSelection" action="{!doProcessSelection}" />           
+            <apex:commandButton value="Back to Lead" action="{!backToLead}" style="width:150px" />
+          
+                                            </td>  
+                                        </tr></table>
+          
+        </apex:pageBlockButtons>
+                 
+        <apex:pageBlockSection columns="2">
+            
+            
+            <!-- Table for displaying Contacts -->
+            <apex:pageBlockSection >
+           
+                <apex:outputPanel layout="block" style="overflow: auto; height: 300px;  width:500px" >
+                 <table style="background-color:#81F7F3;width:500px">
+                                        <tr >
+                                            <td style="vertical-align:middle;"  valign="middle">
+         <b> Contacts </b>
+                                            </td>  
+                                        </tr></table>
+                    <apex:pageBlockTable value="{!contactList}" var="c" id="table"  title="contacts" rendered="{!(contactList.size != 0)}"> >
+                        <!-- The 'selected' property in the ContactWrapper class -->
+                        <apex:column >
+                        <!-- <apex:inputCheckbox value="{!c.selected}"/>-->
+                        <apex:inputCheckbox value="{!c.selected}"  id="checkedoneCon"  onclick="return checkoneCon(this,'{c.selected}')"  /> 
+                        </apex:column>
+                        <!-- The contact fields within the ContactWrapper -->
+                        <apex:column value="{!c.tContact.FirstName}" />
+                        <apex:column value="{!c.tContact.LastName}" />
+                        <!--<apex:column value="{!c.tContact.Email}" />
+                        <apex:column value="{!c.tContact.Phone}" />-->
+                    </apex:pageBlockTable>
+                <!-- Table for displaying Accounts-->               
+               
+                 <apex:outputText rendered="{!(contactList.size = 0)}" value="There are no contacts to display." /><br></br>
+                  <table >
+                                        <tr >
+                                            <td style="padding-left:5px;">
+                   
+                   <apex:inputCheckbox id="checkedoneCon"  value="{!conselected}" onclick="return checkoneCon(this,'{a.selected}')"  /> Create new contact
+                     </td>  
+                                        </tr></table>
+                   
+                </apex:outputPanel>               
+            </apex:pageBlockSection>
+            <apex:pageBlockSection >
+            
+                <apex:outputPanel layout="block" style="overflow: auto;  height: 300px;  width:500px"  >
+                
+                 
+          <table style="background-color:#81F7F3;width:500px">
+                                        <tr >
+                                            <td style="vertical-align:middle;"  valign="middle">
+         <b> Accounts</b>
+                                            </td>  
+                                        </tr></table>
+                
+                    <apex:pageBlockTable value="{!accountList}" var="a" id="table1" rendered="{!(accountList.size != 0)}"> >
+                        <!-- The 'selected' property in the ContactWrapper class -->
+                        
+                        <apex:column >
+                        <!-- <apex:inputCheckbox value="{!c.selected}"/>-->
+                        <apex:inputCheckbox value="{!a.selected}"   id="checkedoneAcc"  onclick="return checkoneAcc(this,'{a.selected}')"   /> 
+                        </apex:column>
+                        <!-- The contact fields within the ContactWrapper -->
+                        <apex:column value="{!a.tAccount.Name}" />
+                        <!--  <apex:column value="{!a.numberOfRow }" />-->
+                    </apex:pageBlockTable>                     
+                     <apex:outputText rendered="{!(accountList.size = 0)}" value="There are no Accounts to display." /><br></br>
+                     <table >
+                                        <tr >
+                                            <td style="padding-left:5px;">
+          <apex:inputCheckbox id="checkedoneAcc"  value="{!accselected}"  onclick="return checkoneAcc(this,'{a.selected}')"  /> Create new Aoccunt
+                                            </td>  
+                                        </tr></table>
+                    
+                </apex:outputPanel>
+            </apex:pageBlockSection>
+        </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+ </apex:page>

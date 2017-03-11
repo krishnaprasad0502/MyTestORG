@@ -1,0 +1,8 @@
+<apex:component controller="controllerforcomponent">
+    <apex:attribute name="sobjectname" type="string" assignTo="{!objectname}" required="true" description="for objectname storing"/>
+    <apex:pageBlock >
+        <apex:pageBlockTable value="{!records}" var="a">
+                   
+        </apex:pageBlockTable>    
+    </apex:pageBlock>
+</apex:component>

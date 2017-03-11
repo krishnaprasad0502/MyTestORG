@@ -1,0 +1,261 @@
+<apex:page showHeader="true" controller="SBcFileList">
+    <apex:outputPanel rendered="{!pageRender}">
+        <input type="hidden" name="jsessionid" id="sessionid" />
+        <script>
+ function getId(){               
+       SBcFileList.getSessionId(function(result, event){
+                if (event.status) {                      
+                  document.getElementById('sessionid').value= result;
+                } else if (event.type === 'exception') {    
+                    document.getElementById("errors-js").innerHTML = event.message;
+                } else {
+                    document.getElementById("errors-js").innerHTML = event.message;
+                }
+            }, {escape:true});                                
+    }
+     function getFile(filename){           
+         var hasPrivilege = '{!JSENCODE(hasPrivilege)}';
+         if(hasPrivilege == 'true'){
+             getId();                        
+             var fn = "downloadFile('"+filename+"')";
+             var t =setTimeout(fn,3000);                            
+         }else{
+             parent.location.href = '/apex/SBvErrorPage';           
+         }              
+     }
+     function downloadFile(filename){
+     
+         var sessionid;
+         sessionid = document.getElementById('sessionid').value; 
+         var resVal =sessionid.split(',');  
+         var userid = resVal[0];
+         var authVal = resVal[1];
+         var ctTime = resVal[2];
+         var objIdStr ='{!JSENCODE($CurrentPage.parameters.objId)}';               
+         
+         var path = '{!JSENCODE(baseFolder)}/{!JSENCODE($CurrentPage.parameters.objName)}'+'/'+objIdStr+'/'+filename;
+         
+          var url='{!JSINHTMLENCODE(serviceUrl)}?action=DOWNLOAD&actionui=false'; 
+        
+        
+         document.getElementById("userid").value=userid;
+         document.getElementById("path").value=path;
+         document.getElementById("authResult").value=authVal;
+         document.getElementById("ct").value=ctTime;
+         document.forms['downloadform'].action = url;
+         document.forms['downloadform'].method = "post";
+         document.forms['downloadform'].submit();         
+         
+         //parent.location.href = '{!JSINHTMLENCODE(baseURL)}/apex/SBvViewList?pg=list&pgNum={!pgNum}&showMore={!JSINHTMLENCODE(showMore)}&objName={!JSENCODE($CurrentPage.parameters.objName)}&objId={!JSENCODE($CurrentPage.parameters.objId)}&recordName={!JSENCODE($CurrentPage.parameters.recordName)}';                      
+     }  
+     
+      function rediretdelPage(recId,objName,fileId,fileName){
+       // alert('jj');
+        var a;       
+        var hasPrivilege = '{!JSENCODE(hasPrivilege)}';
+        var idstr = recId;
+       // alert(idstr);
+        var objName = objName;
+        //alert(objName);
+        var recordName = fileId;
+       // alert(recordName);
+        if(hasPrivilege == 'true'){
+            parent.location.href = '{!JSINHTMLENCODE(baseURL)}/apex/SBvFileDelete?objId='+idstr+'&objName='+objName+'&fileId='+fileId+'&fileName='+fileName;            
+            
+        }else{
+            parent.location.href = '{!JSINHTMLENCODE(baseURL)}/apex/SBvErrorPage';           
+        }
+     }
+      
+    
+</script>
+
+        <form name="downloadform" action="" target="_blank">
+            <input type="hidden" name="userid" id="userid" /> <input
+                type="hidden" name="path" id="path" /> <input type="hidden"
+                name="authResult" id="authResult" /> <input type="hidden" name="ct"
+                id="ct" />
+        </form>
+        <apex:form >
+            <div class="bPageTitle" id="firstHeading">
+                <div class="ptBody secondaryPalette" id="first">
+                    <div class="content" id="cont">
+                        <img src="/s.gif" class="pageTitleIcon" />
+                        <h1 class="pageType noSecondHeader">Attachments for
+                            {!$CurrentPage.parameters.recordName}</h1>
+                        <div class="blank" id="blankdiv">&nbsp;</div>
+                    </div>
+
+                </div>
+            </div>
+            <br />
+            <div
+                style="color: #015BA7; font-weight: normal; text-decoration: none;">
+                &nbsp;«&nbsp;
+                <apex:outputLink target="_top"
+                    value="/{!$CurrentPage.parameters.objId}"
+                    style="color: #015BA7;
+  font-weight: normal;
+  text-decoration: none;">Back to {!$CurrentPage.parameters.recordName}</apex:outputLink>
+            </div>
+
+            <apex:outputPanel layout="block" style="float:right;">
+                <!-- ========================================== -->
+                <!-- PREVIOUS                                   -->
+                <!-- ========================================== -->
+                <apex:outputText value="<Previous Page"
+                    rendered="{!NOT(paginator.hasPrevious)}" styleClass="greyedLink" />
+                <apex:commandLink value="<Previous Page"
+                    rendered="{!paginator.hasPrevious}" action="{!paginator.previous}">
+                    <apex:param name="showMore" assignTo="{!showMore}" value="false" />
+                    <apex:param name="pgNum" assignTo="{!pgNum}" value="{!pgNum-1}" />
+                </apex:commandLink>
+                                    &nbsp;                  
+                                   <apex:outputText value="|" />
+                                   &nbsp; 
+                                      <!-- ========================================== -->
+                <!-- NEXT                                       -->
+                <!-- ========================================== -->
+                <apex:outputText value="Next Page>"
+                    rendered="{!NOT(paginator.hasNext)}" />
+                <apex:commandLink value="Next Page>" rendered="{!paginator.hasNext}"
+                    action="{!paginator.next}">
+                    <apex:param name="showMore" assignTo="{!showMore}" value="false" />
+                    <apex:param name="pgNum" assignTo="{!pgNum}" value="{!pgNum+1}" />
+                </apex:commandLink>
+                                    &nbsp;&nbsp;
+                                    </apex:outputPanel>
+            <br />
+            <br />
+            <apex:pageBlock >
+                <apex:pageBlockTable value="{!files}" var="fileInfo">
+                    <apex:column headerValue="Action">
+                        <a id="{!fileInfo.name}" name="viewAct" onclick="getFile(this.id)"
+                            style="cursor: pointer;color: #015BA7; font-weight: normal; text-decoration: none;">View</a>
+                    </apex:column>
+
+                    <apex:column headerValue="Title">
+                        <a class="fname" id="{!fileInfo.name}" name="filename"
+                            onclick="getFile(this.id)"
+                            style="cursor: pointer; text-decoration: underline;">{!fileInfo.name}</a>
+
+                    </apex:column>
+                    <apex:column headerValue="Note">
+                        <img class="checkImg" width="21" height="16" title="Not Checked"
+                            alt="Not Checked" src="/img/checkbox_unchecked.gif" />
+                    </apex:column>
+                    <apex:column headerValue="File">
+                        <img class="checkImg" width="21" height="16" title="Checked"
+                            alt="Checked" src="/img/checkbox_checked.gif" />
+                    </apex:column>
+                    <apex:column headerValue="Created Date">
+
+                        <apex:outputText value="{!fileInfo.cdate}" />
+                        <br />
+
+                    </apex:column>
+
+                    <apex:column headerValue="Last Modified">
+
+                        <apex:outputText value="{!fileInfo.cdate}" />
+                        <br />
+
+                    </apex:column>
+                               <apex:column headerValue="Action">
+                          <a name="viewAct"
+                                onclick="rediretdelPage('{!fileInfo.recId}','{!fileInfo.objName}','{!fileInfo.fileId}','{!fileInfo.name}')"  
+                                style="cursor: pointer; text-decoration: underline;">Delete
+                                file</a>
+                       
+                    </apex:column>
+                 
+
+                    <apex:column headerValue="Owner Alias">
+
+                        <apex:outputText value="{!fileInfo.owneralias}" />
+                        <br />
+
+                    </apex:column>
+
+                </apex:pageBlockTable>
+                <center>
+                    <apex:outputPanel styleClass="fewerMore"
+                        rendered="{!NOT(paginator.hasPrevious)}">
+                           Show me  <img title="Show More"
+                            class="moreArrow" alt="Show More" src="/s.gif" />
+                        <apex:commandLink action="{!paginator.next}" value="more"
+                            style="text-decoration:none;color:blue;">
+                            <apex:param name="showMore" assignTo="{!showMore}" value="true" />
+                            <apex:param name="pgNum" assignTo="{!pgNum}" value="{!pgNum+1}" />
+                        </apex:commandLink>  records per list page
+                       </apex:outputPanel>
+                    <apex:outputPanel styleClass="fewerMore"
+                        rendered="{!IF(paginator.hasPrevious && paginator.hasNext,true,false)}">
+                        Show me  <img title="Show Fewer"
+                            class="fewerArrow" alt="Show Fewer" src="/s.gif" />
+                        <apex:commandLink action="{!paginator.previous}" value="fewer"
+                            style="text-decoration:none;color:blue;">
+                            <apex:param name="showMore" assignTo="{!showMore}" value="false" />
+                            <apex:param name="pgNum" assignTo="{!pgNum}" value="{!pgNum-1}" />
+                        </apex:commandLink> / <img title="Show More" class="moreArrow" alt="Show More"
+                            src="/s.gif" />
+                        <apex:commandLink action="{!paginator.next}" value="more"
+                            style="text-decoration:none;color:blue;">
+
+                            <apex:param name="showMore" assignTo="{!showMore}" value="true" />
+                            <apex:param name="pgNum" assignTo="{!pgNum}" value="{!pgNum+1}" />
+                        </apex:commandLink> records per list page
+                       
+                       </apex:outputPanel>
+                    <apex:outputPanel styleClass="fewerMore"
+                        rendered="{!NOT(paginator.hasNext)}">                       
+                            Show me  <img title="Show Fewer"
+                            class="fewerArrow" alt="Show Fewer" src="/s.gif" />
+                        <apex:commandLink action="{!paginator.previous}" value="fewer"
+                            style="text-decoration:none;color:blue;">
+                            <apex:param name="showMore" assignTo="{!showMore}" value="false" />
+                            <apex:param name="pgNum" assignTo="{!pgNum}" value="{!pgNum-1}" />
+                        </apex:commandLink> records per list page
+                       </apex:outputPanel>
+                </center>
+                
+            </apex:pageBlock>
+            <br />
+            <div
+                style="color: #015BA7; font-weight: normal; text-decoration: none;">
+                &nbsp;«&nbsp;
+                <apex:outputLink target="_top"
+                    value="/{!$CurrentPage.parameters.objId}"
+                    style="color: #015BA7;
+  font-weight: normal;
+  text-decoration: none;">Back to {!$CurrentPage.parameters.recordName}</apex:outputLink>
+            </div>
+            <apex:outputPanel layout="block" style="float:right;">
+                <!-- ========================================== -->
+                <!-- PREVIOUS                                   -->
+                <!-- ========================================== -->
+                <apex:outputText value="<Previous Page"
+                    rendered="{!NOT(paginator.hasPrevious)}" styleClass="greyedLink" />
+                <apex:commandLink value="<Previous Page"
+                    rendered="{!paginator.hasPrevious}" action="{!paginator.previous}">
+                    <apex:param name="showMore" assignTo="{!showMore}" value="false" />
+                    <apex:param name="pgNum" assignTo="{!pgNum}" value="{!pgNum-1}" />
+                </apex:commandLink>
+                                    &nbsp;                  
+                                   <apex:outputText value="|" />
+                                   &nbsp; 
+                                      <!-- ========================================== -->
+                <!-- NEXT                                       -->
+                <!-- ========================================== -->
+                <apex:outputText value="Next Page>"
+                    rendered="{!NOT(paginator.hasNext)}" />
+                <apex:commandLink value="Next Page>" rendered="{!paginator.hasNext}"
+                    action="{!paginator.next}">
+                    <apex:param name="showMore" assignTo="{!showMore}" value="false" />
+                    <apex:param name="pgNum" assignTo="{!pgNum}" value="{!pgNum+1}" />
+                </apex:commandLink>
+                                    &nbsp;&nbsp;
+                                    </apex:outputPanel>
+        </apex:form>
+    </apex:outputPanel>
+</apex:page>

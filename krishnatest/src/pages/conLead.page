@@ -1,0 +1,32 @@
+<apex:page standardController="Lead" extensions="XXCSRLeadConvertClass"   title="Convert Lead" id="pgConvertLead">
+
+<apex:form id="frmConvert">
+
+    <apex:actionFunction name="afOpportunity" action="{!doNothing}" rerender="pbsConvert" immediate="true" />
+
+    <apex:pageBlock title="Convert Lead" mode="edit">
+   
+        <apex:pageBlockButtons >
+            <apex:commandButton id="cmdConvert" action="{!convertLead}" value="Convert" />
+            <apex:commandButton id="cmdCancel" action="{!cancel}" value="Cancel" />
+        </apex:pageBlockButtons>
+       
+        <apex:messages ></apex:messages>
+       
+        <apex:pageBlockSection id="pbsConvert" title="Convert Lead" columns="1">
+                       
+            <apex:inputField id="ifOwnerId" value="{!ldSource.OwnerId}" />
+            <apex:selectList id="soAccount" value="{!strAccountId}" label="Account Name" size="1">
+                <apex:selectOptions value="{!lstCompanyInfo}" />
+            </apex:selectList>
+            <apex:selectList id="soContact" value="{!strContactId}" label="Contact Name" size="1">
+                <apex:selectOptions value="{!lstContactInfo}" />
+            </apex:selectList>
+                      
+        </apex:pageBlockSection>
+   
+    </apex:pageBlock>
+
+</apex:form>
+
+</apex:page>

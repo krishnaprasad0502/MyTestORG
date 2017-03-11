@@ -1,0 +1,235 @@
+<apex:page controller="SBcFileList">
+
+    <apex:pageMessages />
+    <script>
+function getId(){   
+            
+       		SBcFileList.getSessionId(function(result, event){      
+                if (event.status) {                      
+                  document.getElementById('sessionid').value= result;
+                } else if (event.type === 'exception') {    
+                    document.getElementById("errors-js").innerHTML = event.message;
+                } else {
+                    document.getElementById("errors-js").innerHTML = event.message;
+                }
+            }, {escape:true});                                
+    }
+    
+    
+    ///////////////////////////////////////////////////////
+    
+    function getDelId(){   
+            
+       		SBcFileList.getDelSessionId(function(result, event){      
+                if (event.status) {                      
+                  document.getElementById('sessionid').value= result;
+                } else if (event.type === 'exception') {    
+                    document.getElementById("errors-js").innerHTML = event.message;
+                } else {
+                    document.getElementById("errors-js").innerHTML = event.message;
+                }
+            }, {escape:true});                                
+    }
+    /////////////////////////////////////////////////////////////////////
+
+      
+      
+      ////////////////////////////////////
+     function getFile(filename){   
+              
+         var hasPrivilege = '{!JSENCODE(hasPrivilege)}';
+         
+         if(hasPrivilege == 'true'){
+             getId();                        
+              
+             var fn = "downloadFile('"+filename+"')";
+             var t =setTimeout(fn,3000);                            
+         }else{
+             parent.location.href = '/apex/SBvErrorPage';           
+         }              
+     }
+     
+     /////////////////////////////////////////////////
+     
+         function getDelFile(filename,recId,recPath){  
+        //  alert(recId);
+     // alert(recPath);
+      deleteActionFun(recId,recPath);
+       //location.reload(true);
+     setTimeout("location.reload(true);",1000);
+       
+              
+         var hasPrivilege = '{!JSENCODE(hasPrivilege)}';
+         
+         if(hasPrivilege == 'true'){
+             getDelId();                        
+              
+           //  var fn = "deleteFile('"+filename+"')";
+             var t =setTimeout(fn,800);                            
+         }else{
+             parent.location.href = '/apex/SBvErrorPage';           
+         }              
+     }
+     //////////////////////////////////////
+     function downloadFile(filename){
+          
+         var sessionid;
+         sessionid = document.getElementById('sessionid').value; 
+         var resVal =sessionid.split(',');  
+         var userid = resVal[0];
+         var authVal = resVal[1];
+         var ctTime = resVal[2];
+         var objIdStr ='{!JSENCODE($CurrentPage.parameters.objId)}';               
+         
+         var path = '{!JSENCODE(baseFolder)}/{!JSENCODE($CurrentPage.parameters.objName)}'+'/'+objIdStr+'/'+filename;
+       ///	alert(path);
+         var url='{!JSINHTMLENCODE(serviceUrl)}?action=DOWNLOAD&actionui=false'; 
+           
+         document.getElementById("userid").value=userid;
+         document.getElementById("path").value=path;
+         document.getElementById("authResult").value=authVal;
+         document.getElementById("ct").value=ctTime;
+         document.forms['downloadform'].action = url;
+         document.forms['downloadform'].method = "post";
+         document.forms['downloadform'].submit(); 
+     
+        
+         //parent.location.href = '{!JSINHTMLENCODE(baseURL)}/apex/SBvAllFiles?pg=viewall&objName={!JSENCODE($CurrentPage.parameters.objName)}&objId={!JSENCODE($CurrentPage.parameters.objId)}&recordName={!JSENCODE($CurrentPage.parameters.recordName)}';           
+     } 
+     //////////////////////////////////////////////////////
+         function deleteFile(filename){
+          
+         var sessionid;
+         sessionid = document.getElementById('sessionid').value; 
+         var resVal =sessionid.split(',');  
+         var userid = resVal[0];
+         var authVal = resVal[1];
+         var ctTime = resVal[2];
+         var objIdStr ='{!JSENCODE($CurrentPage.parameters.objId)}';               
+         
+         var path = '{!JSENCODE(baseFolder)}/{!JSENCODE($CurrentPage.parameters.objName)}'+'/'+objIdStr+'/'+filename;
+       
+         var url='{!JSINHTMLENCODE(serviceUrl)}?action=DELETE&actionui=false'; 
+           
+         document.getElementById("userid").value=userid;
+         document.getElementById("path").value=path;
+         document.getElementById("authResult").value=authVal;
+         document.getElementById("ct").value=ctTime;
+         document.forms['downloadform'].action = url;
+         document.forms['downloadform'].method = "post";
+         document.forms['downloadform'].submit(); 
+     
+        
+         //parent.location.href = '{!JSINHTMLENCODE(baseURL)}/apex/SBvAllFiles?pg=viewall&objName={!JSENCODE($CurrentPage.parameters.objName)}&objId={!JSENCODE($CurrentPage.parameters.objId)}&recordName={!JSENCODE($CurrentPage.parameters.recordName)}';           
+     }   
+    
+        function redirectPage(recId,objName,fileId,fileName){
+      //  alert('jj');
+        var a;       
+        var hasPrivilege = '{!JSENCODE(hasPrivilege)}';
+        var idstr = recId;
+       //// alert(idstr);
+        var objName = objName;
+       // alert(objName);
+        var recordName = fileId;
+       // alert(recordName);
+        if(hasPrivilege == 'true'){
+            parent.location.href = '{!JSINHTMLENCODE(baseURL)}/apex/SBvFileDelete?objId='+idstr+'&objName='+objName+'&fileId='+fileId+'&fileName='+fileName;            
+            
+        }else{
+            parent.location.href = '{!JSINHTMLENCODE(baseURL)}/apex/SBvErrorPage';           
+        }
+     }
+</script>
+
+    <form name="downloadform" method="post" action="" target="_blank">
+        <input type="hidden" name="userid" id="userid" /> 
+        <input type="hidden"   name="path" id="path" />
+         <input type="hidden" name="authResult"  id="authResult" /> 
+         <input type="hidden" name="ct" id="ct" />
+    </form>
+
+    <apex:outputPanel rendered="{!pageRender}">
+        <apex:sectionHeader title="View All Attachments" />
+        <apex:form >
+        
+            <input type="hidden" id="sessionid" name="jsessionid" />
+            <div class="topButton">
+                <apex:commandButton value="Previous"
+                    rendered="{!paginator.hasPrevious}" action="{!paginator.previous}"
+                    disabled="{!disableButtons}">
+                    <apex:param name="showMore" assignTo="{!showMore}" value="false" />
+                </apex:commandButton>
+                <apex:commandButton value="Next" rendered="{!paginator.hasNext}"
+                    action="{!paginator.next}" disabled="{!disableButtons}">
+                    <apex:param name="showMore" assignTo="{!showMore}" value="false" />
+                </apex:commandButton>
+                <apex:commandButton value="Cancel" disabled="{!disableButtons}"
+                    action="{!cancel}" />
+            </div>
+            <br />
+
+            <apex:repeat value="{!files}" var="fileInfo" id="theRepeat">
+                <apex:pageBlock >
+
+                    <apex:pageBlockSection columns="1">
+                        <apex:pageBlockSectionItem >
+                            <br />
+                        </apex:pageBlockSectionItem>
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Title" for="title" />
+                            <apex:outputText value="{!fileInfo.name}" id="title" />
+                        </apex:pageBlockSectionItem>
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Type" for="type" />
+                            <apex:outputText value="Attachment" id="type" />
+                        </apex:pageBlockSectionItem>
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Owner" for="owner" />
+                            <apex:outputText value="{!fileInfo.username}" id="owner" />
+                        </apex:pageBlockSectionItem>
+                        		
+                        		 <apex:pageBlockSectionItem >
+                        		   <apex:outputLabel value="Action" for="Action" />
+                    
+                               
+                                  <a name="viewAct"
+                                onclick="redirectPage('{!fileInfo.recId}','{!fileInfo.objName}','{!fileInfo.fileId}','{!fileInfo.name}')"  
+                                style="cursor: pointer; text-decoration: underline;">Delete
+                                file</a>
+                        
+                       
+                        </apex:pageBlockSectionItem>
+                        
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="" />
+                            <a id="{!fileInfo.name}" name="viewAct"
+                                onclick="getFile(this.id)" target="_parent"
+                                style="cursor: pointer;  text-decoration: underline;">View
+                                file</a>
+                        </apex:pageBlockSectionItem>
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Related To" for="rto" />
+                            <apex:outputText value="{!$CurrentPage.parameters.recordName}"
+                                id="rto" />
+                        </apex:pageBlockSectionItem>
+                    </apex:pageBlockSection>
+                </apex:pageBlock>
+            </apex:repeat>
+            <br />
+            <div class="topButton">
+                <apex:commandButton value="Previous"
+                    rendered="{!paginator.hasPrevious}" action="{!paginator.previous}"
+                    disabled="{!disableButtons}">
+                    <apex:param name="showMore" assignTo="{!showMore}" value="false" />
+                </apex:commandButton>
+                <apex:commandButton value="Next" rendered="{!paginator.hasNext}"
+                    action="{!paginator.next}" disabled="{!disableButtons}">
+                    <apex:param name="showMore" assignTo="{!showMore}" value="false" />
+                </apex:commandButton>
+                <apex:commandButton value="Cancel" disabled="{!disableButtons}"
+                    action="{!cancel}" />
+            </div>
+        </apex:form>
+    </apex:outputPanel>
+</apex:page>

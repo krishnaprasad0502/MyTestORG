@@ -1,0 +1,33 @@
+<apex:page controller="OppsControllernew" tabStyle="Account">
+    <apex:form >
+        <apex:pageBlock >
+            <apex:pageBlockSection title="Chart With Table">
+                <apex:outputPanel style="float:left;">
+                    <apex:chart data="{!Opportunities}" width="500" height="250">
+                        <apex:axis type="Numeric" position="left" fields="Amount" title="Amount"/>
+                        <apex:axis type="Category" position="bottom" fields="Name" title="Name"/>
+                            
+                        <apex:barSeries orientation="horizontal" axis="left" xField="Amount" yField="Name"/>
+                        <!--<apex:pieSeries dataField="amount" labelField="name"/>-->
+                        <apex:legend position="right"/>
+                    </apex:chart>
+                
+                    <apex:chart data="{!Opportunities}" width="500" height="250">
+                        <apex:axis type="Category" position="bottom" fields="Name" title="Name" />
+                        <apex:axis type="Numeric" position="left" fields="Amount" title="Amount" grid="true"/>
+                        <apex:lineSeries axis="left" fill="true"  xField="Name" yField="Amount"  markerType="cross" markerSize="4" markerFill="#FF0000"/>
+                  </apex:chart>
+                </apex:outputPanel>
+              
+               <apex:outputPanel style="float:right;margin-right:4cm;height:600px;width:400px;" >
+                 <p><b> Opportunity Table</b></p><br/>
+                 <apex:pageBlockTable value="{!Opportunities}" var="opp">
+                    <apex:column headerValue="Opportunity" value="{!opp.Name}"/>
+                    <apex:column headerValue="Amount" value="{!opp.amount}"/>
+                    <apex:column headerValue="Created Date" value="{!opp.createddate}" style="width:80px"/>
+                </apex:pageBlockTable>
+            </apex:outputPanel>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

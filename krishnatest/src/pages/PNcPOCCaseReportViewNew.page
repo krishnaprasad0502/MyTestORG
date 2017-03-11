@@ -1,0 +1,104 @@
+<apex:page controller="PNcPOCCaseReportViewNew" docType="html-5.0" >
+    <!-- <script>
+        function setFocusOnLoad() {}
+        function validatValue(){  
+              var sDate = new Date(document.getElementById('j_id0:j_id3:accounts:sDate').value);
+              var eDate = new Date(document.getElementById('j_id0:j_id3:accounts:eDate').value);
+              var Status = document.getElementById('j_id0:j_id3:accounts:j_id6').value;
+              
+                                                                 
+                    if(sDate == 'Invalid Date' && eDate == 'Invalid Date' ){
+                         alert('Please choose Date Range');
+                    }else if(sDate == 'Invalid Date'){
+                         alert('Start Date Should not be Blank');
+                         return false;   
+                    }else if(eDate == 'Invalid Date'){
+                         alert('End Date Should not be Blank');
+                    }else if(Date.parse(sDate) > Date.parse(eDate) ){
+                         alert('End Date should be greater than Start Date');
+                    } 
+                                   
+        }
+    </script>-->
+    <apex:define name="body">
+        <apex:form >
+            <apex:sectionHeader title="POC Report Information" subtitle="POC Report Information"/>
+            <apex:pageBlock title="POC Report Information" id="accounts">
+                <apex:pageBlockButtons location="Top">
+                    <apex:outputText value="Status : "/> 
+                    <apex:inputField value="{!casVal.Status}"/>
+                    <apex:outputText value="Start Date : "/> 
+                    <apex:input value="{!sDate}" id="theTextInput" type="date"/>
+                    <apex:outputText value="End Date : "/> 
+                    <apex:input value="{!eDate}" id="theTextInput2" type="date"/>
+                    <apex:commandButton value="Search" action="{!searchCases}" reRender="accounts"/>
+                </apex:pageBlockButtons>         
+                <apex:outputpanel style="overflow:scroll;width:1050px;" layout="block"> 
+                <apex:pageBlockTable value="{!lstCase}" var="cs"> 
+                
+                    <apex:column headerValue="Account">
+                        <apex:outputField value="{!cs.Account.Name}"/>
+                    </apex:column>
+
+                    <apex:column headerValue="Case Number">                                    
+                        <apex:outputField value="{!cs.CaseNumber}"/>
+                    </apex:column>
+
+    
+                    <apex:facet name="footer">
+                        <apex:outputPanel >
+                            <apex:outputText value="Page {!paginator.pageNumberDisplayFriendly} of {!paginator.pageCount} in {!paginator.recordCount} Results"/>
+                            <apex:outputPanel >&nbsp;&nbsp;&nbsp;&nbsp;</apex:outputPanel>
+                            <apex:outputText value="First" rendered="{!NOT(paginator.hasPrevious)}"/>
+                            <apex:commandLink value="First" rendered="{!paginator.hasPrevious}" action="{!paginator.first}"/>
+                            <apex:outputPanel >&nbsp;&nbsp;&nbsp;&nbsp;</apex:outputPanel>
+
+                            <apex:commandLink value="Previous" action="{!paginator.previous}" 
+                                rendered="{!IF(paginator.hasPrevious,'true','false')}"/>
+                            <apex:outputText value="Previous" rendered="{!IF(NOT(paginator.hasPrevious),'true','false')}"/>
+                            
+                            &nbsp;&nbsp;
+            
+                            <!-- ========================================== -->
+                            <!-- PAGE SHORTCUTS                             -->
+                            <!-- ========================================== -->
+                            <apex:repeat value="{!paginator.previousSkipPageNumbers}" var="skipPageNumber">
+                                <apex:outputPanel >
+                                    <apex:commandLink value="{!skipPageNumber+1}" action="{!skipToPage}" reRender="accounts">
+                                        <apex:param name="pageNumber" id="pageNumber" value="{!skipPageNumber}" assignto="{!pageNumber}" />
+                                    </apex:commandLink>
+                                </apex:outputPanel>
+                                &nbsp;&nbsp;
+                            </apex:repeat>
+                            
+                            <apex:outputText style="text-decoration:none; font-weight:bold; background-color: #FFFF00" 
+                                value="{!paginator.pageNumber+1}"/>
+                            &nbsp;&nbsp;
+                            
+                            <apex:repeat value="{!paginator.nextSkipPageNumbers}" var="skipPageNumber">
+                                <apex:outputPanel >
+                                    <apex:commandLink value="{!skipPageNumber+1}" action="{!skipToPage}" reRender="accounts">
+                                        <apex:param name="pageNumber" id="pageNumber" value="{!skipPageNumber}" assignto="{!pageNumber}" />
+                                    </apex:commandLink>
+                                </apex:outputPanel>
+                                &nbsp;&nbsp;
+                            </apex:repeat>
+                            
+                            <apex:outputPanel >&nbsp;|&nbsp;</apex:outputPanel>
+                            
+                            <apex:commandLink value="Next" action="{!paginator.next}" 
+                                rendered="{!IF(paginator.hasNext,'true','false')}"/>
+                            <apex:outputText value="Next" rendered="{!IF(NOT(paginator.hasNext),'true','false')}"/>
+                            <apex:outputPanel >&nbsp;|&nbsp;</apex:outputPanel>
+                            <apex:commandLink value="Last" action="{!paginator.last}" 
+                                rendered="{!paginator.hasNext}"/>
+                            <apex:outputText value="Last" rendered="{!NOT(paginator.hasNext)}"/>
+
+                        </apex:outputPanel>
+                    </apex:facet>
+                </apex:pageBlockTable> 
+                </apex:outputpanel>
+            </apex:pageBlock> 
+        </apex:form>
+    </apex:define>
+</apex:page>

@@ -1,0 +1,4 @@
+<apex:page >
+  <apex:includeScript value="{!URLFOR($Resource.JSCalendar,'calendar.js')}"/>
+<apex:stylesheet value="{!URLFOR($Resource.JSCalendar,'calendar_blue.css')}" />
+</apex:page>

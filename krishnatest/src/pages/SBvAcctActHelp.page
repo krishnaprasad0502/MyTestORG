@@ -1,0 +1,22 @@
+<apex:page showHeader="false" sidebar="false">
+    <apex:pageMessages />
+    <apex:sectionHeader title="Help for Account Activation" />
+    <apex:pageBlock >
+        <apex:pageBlockSection columns="1">
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Username" for="uname" />
+                <apex:outputText value="Valid Email address used for uploading and downloading files."
+                    id="uname" />
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Password" for="pwd" />
+                <apex:outputText value="Password used for uploading and downloading files." id="pwd" />
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Encryption Key" for="ekey" />
+                <apex:outputText value="The encryption value used for encrypting/decrypting the files stored in Amazon S3."
+                    id="ekey" />
+            </apex:pageBlockSectionItem>
+        </apex:pageBlockSection>
+    </apex:pageBlock>
+</apex:page>

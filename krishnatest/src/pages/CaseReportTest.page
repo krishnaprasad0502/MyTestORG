@@ -1,0 +1,203 @@
+<apex:page sidebar="false">
+
+   <apex:includeScript value="{!$Resource.calnderscrpt}" />
+    <apex:stylesheet value="{!$Resource.calnddp}"/>
+<style>
+  
+.dtpicker{
+    background:transparent url({!$Resource.calDtpick});
+    background-repeat:no-repeat;
+    width: 15px;
+    height:15px;
+    border:0px solid #ccc;
+}
+.lrgtxt{
+    width:135px; height:22px; border:0px solid black;
+    background:transparent url({!$Resource.cal_popuplrgtxt});
+    background-repeat:no-repeat; background-position:left;
+    padding-left:5px; padding-right:5px;
+    font:12px Arial;
+}
+.smltxt{
+    width:97px; height:22px; border:0px solid black;
+    background:transparent url({!$Resource.cal_popupSmltxt});   
+    background-repeat:no-repeat; background-position:left;
+    font:12px Arial;
+    padding-left:5px; padding-right:5px;
+}
+textarea.smltxtarea{
+    resize:none;
+    background:transparent url({!$Resource.smltxtarea});
+    background-repeat:no-repeat; background-position:left;
+    padding:8px 6px 5px 5px;
+    width:201px; height:68px;border:0px;font:11px Arial;
+    overflow:auto;
+}
+.lrgdrpdwn{
+    background:transparent url({!$Resource.lrgdrpdwn});
+    background-repeat:no-repeat; background-position:left;
+    width:201px;  border:0px;padding:3px;
+    font:11px Arial;
+}
+    </style>
+    <script language="javascript" type="text/javascript">
+    
+    var branchID="j_id0:j_id4:j_id31:j_id49:Branch";
+    var contactID="j_id0:j_id4:j_id31:j_id53:j_id54:contact";
+      
+        function tablePrint(){  
+        var display_setting="toolbar=yes,location=no,directories=yes,menubar=yes,";  
+        display_setting+="scrollbars=yes,width=750, height=600, left=100, top=25";
+        var content_innerhtml = document.getElementById("tbl_display").innerHTML;  
+        var document_print=window.open("","",display_setting);  
+        document_print.document.write('<html><head><title>print using javascript </title></head>');  
+        document_print.document.write('<body style="font-family:verdana; font-size:12px;" >');  
+        document_print.document.write(content_innerhtml);  
+        document_print.document.write('</body></html>');  
+        document_print.document.open(); 
+        document_print.print();  
+       // setTimeout('window.close()', 10);
+        document_print.document.close();  
+        
+        }  
+        function EmptySendEmails(){
+            var value=document.getElementById(branchID).value;
+            if(value=='--Select Branch--'){
+                alert('Please Select Branch');
+            }else{
+                for(i=0;i<document.getElementById("j_id0:j_id4:SampleRefersh").value;i++){
+                    EmptySendBranchMail(
+                        document.getElementById("eventfromDate").value,
+                        document.getElementById("eventtoDate").value,
+                        document.getElementById(branchID).value
+                    )
+                }
+                document.getElementById(branchID).selectedIndex=0;
+            }
+            
+        }
+    
+        function SendEmails(){
+            var value=document.getElementById(branchID).value;
+            if(value=='--Select Branch--'){
+                alert('Please Select Branch');
+            }else{
+                for(i=0;i<document.getElementById("j_id0:j_id4:SampleRefersh").value;i++){
+                    SendBranchMail(
+                        document.getElementById("eventfromDate").value,
+                        document.getElementById("eventtoDate").value,
+                        document.getElementById(branchID).value,
+                        i
+                    )
+                }
+                document.getElementById(branchID).selectedIndex=0;
+            }
+            
+        }
+        function BranchDetails(){
+            var value=document.getElementById(branchID).value;
+            if(value!='--Select Branch--'){
+                CollectDetails(
+                    document.getElementById(branchID).value
+                )
+            }
+        } 
+    
+        function showSheet(optionsC){
+           
+           if(optionsC=="1"){
+               if(dateDifference()){
+                Show(
+                     document.getElementById("eventfromDate").value,
+                     document.getElementById("eventtoDate").value,
+                     document.getElementById(contactID).value
+                     
+                )}else{
+                    return false;
+                }
+                
+                
+            }else{
+            
+                Send(
+                     document.getElementById("eventfromDate").value,
+                     document.getElementById("eventtoDate").value,
+                     document.getElementById(contactID).value,
+                     document.getElementById("alterEmails").value
+                )   
+            }
+        }
+         var DateDiff = {
+                inDays: function(d1, d2) {
+                    var t2 = d2.getTime();
+                    var t1 = d1.getTime();
+                    return parseInt((t2-t1)/(24*3600*1000));
+                }
+            }
+
+        function dateDifference()
+        {
+            var stdate=new Date(document.getElementById("eventfromDate").value);
+            var enddate=new Date(document.getElementById("eventtoDate").value);
+            
+            if(DateDiff.inDays(stdate, enddate)>5)
+            {
+                alert('Please Select only 5 days!');
+                return false
+            }
+            else
+            {
+                return true;
+            }
+        }
+        function fillTodate(){
+            document.getElementById('eventtoDate').value=document.getElementById('eventfromDate').value;
+        }
+    </script>  
+ NOT working
+    <apex:form >
+        <apex:pageMessages />
+        <apex:pageBlock title="Search Case">
+            <apex:actionStatus startText="requesting..." id="myStatus"/>
+            <apex:actionStatus startText="sending..." id="mymail"/>
+            <apex:pageBlockSection >
+                <apex:pageBlockSectionItem >
+                    <apex:panelGroup >
+                        <div style="padding-top:5px;">
+                            <apex:outputLabel style="font:bold 11px Arial" for="eventfromDate">Case From Date
+                            </apex:outputLabel>
+                        </div>
+                    </apex:panelGroup>
+                    <apex:panelGroup >
+                        <div style="width:125px;">
+                            <div style="float:left;width:99px;" > 
+                                <input type="Text" name="eventfromDate" class="smltxt" onfocus="fillTodate()" onkeydown="return false;" id="eventfromDate" value=""/>     
+                            </div>
+                            <div style="float:right;width:16px;margin-top:5px;"> 
+                                <input type="button" value="" class="dtpicker" style="border:0px" onClick="displayDatePicker('eventfromDate');" /> 
+                            </div>
+                        </div>
+                    </apex:panelGroup>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:panelGroup >
+                        <div style="padding-top:5px;">
+                            <apex:outputLabel style="font:bold 11px Arial" for="eventtoDate">Case To Date
+                            </apex:outputLabel>
+                        </div>
+                    </apex:panelGroup>
+                    <apex:panelgrid >
+                        <div style="width:125px;">
+                            <div style="float:left;width:99px;"> 
+                                <input type="Text" name="eventtoDate" onkeydown="return false;" class="smltxt" id="eventtoDate" value=""/>                                         
+                            </div>
+                            <div style="float:right;width:16px;margin-top:5px;"> 
+                                <input type="button" value="" class="dtpicker" style="border:0px" onClick="displayDatePicker('eventtoDate');" /> 
+                            </div>
+                        </div>
+                    </apex:panelgrid>
+                </apex:pageBlockSectionItem>  
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

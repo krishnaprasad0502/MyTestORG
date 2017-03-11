@@ -1,0 +1,6 @@
+<apex:page standardController="Contact" tabStyle="Contact">
+
+    <c:FileList title="{!contact.Name}" customObjectName="Contact"
+        objectId="{!contact.id}" />
+
+</apex:page>

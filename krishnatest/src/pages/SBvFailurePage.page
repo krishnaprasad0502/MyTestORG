@@ -1,0 +1,32 @@
+<apex:page sidebar="false" controller="SBcFileUpload">
+    <apex:pageMessage summary="Failed to upload file.Please try again."
+        severity="error" strength="3" />
+    <apex:pageMessages />
+    
+    <script>
+    window.onload = function() {  
+         
+       var recId = '{!JSINHTMLENCODE($CurrentPage.parameters.recId)}';
+       var idStr = '{!JSINHTMLENCODE($CurrentPage.parameters.objId)}';
+       if(recId !== null)   {                 
+           delFileInfo(recId,idStr);  
+       }
+     } 
+     function delFileInfo(recId,idStr){
+        css_sb.SBcFileUpload.deleteFileInfo(recId,idStr,function(result, event){
+            if (event.status) {                               
+              
+            } else if (event.type === 'exception') {
+                document.getElementById("errorDiv").innerHTML = event.message;
+            } else {
+                document.getElementById("errorDiv").innerHTML = event.message;
+            }
+         }, {
+             escape : true
+         });
+     }
+    </script>
+    <div class="pbError" id="errorDiv">
+          
+            </div>
+</apex:page>

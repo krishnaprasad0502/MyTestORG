@@ -1,0 +1,23 @@
+<apex:page controller="PNcaseReport" sidebar="false" showheader="false">
+<apex:form >   
+
+ <apex:pageBlock >
+<apex:outputLabel value="Start Date">
+
+                        <apex:inputText id="sampleDateField" value="{!sampleDateField1}" onfocus="DatePicker.pickDate(true, '{!$Component.sampleDateField}', false);"/>
+                        <c:DatePickerComponentController dateFieldId="{!$Component.sampleDateField}" /> 
+                         
+                       
+                     
+
+                    </apex:outputLabel>
+                    <apex:outputLabel value="End Date" >
+
+                        <apex:inputText id="sampleDateField1" value="{!sampleDateField2}" onfocus="DatePicker.pickDate(true, '{!$Component.sampleDateField1}', false);"/>
+                        <c:DatePickerComponentController dateFieldId="{!$Component.sampleDateField1}" />   
+               
+                    </apex:outputLabel>
+ </apex:pageBlock>
+
+                    </apex:form> 
+</apex:page>

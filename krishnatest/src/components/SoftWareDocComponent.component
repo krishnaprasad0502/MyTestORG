@@ -1,0 +1,170 @@
+<apex:component controller="SBcTreeViewController"  allowDML="true" access="global">  
+       <apex:attribute name="roleOrUserIds" type="String" assignTo="{!roleOrUserId}" description="Enter Role or User Id to build the hierarchy. Pass null if you are passing JSON data as a parameter" /> 
+        <apex:attribute name="accountId" type="String" assignTo="{!docId}" description="Enter Role or User Id to build the hierarchy. Pass null if you are passing JSON data as a parameter" />   
+        <apex:attribute name="selectable1" type="Boolean" assignTo="{!selectable}" description="Do you want nodes to be selectable?" />  
+        <apex:attribute name="value" type="String" description="IDs of selected Nodes in CSV format" />  
+        <apex:attribute name="JsonDatas" type="String" assignTo="{!JsonData}" description="JSON input for the tree component" />  
+        
+    <!-- Attribute Definitions -->
+    <apex:attribute name="title" access="global"
+        description="Title of this component which is displayed as the header of the page block."
+        type="String"  assignTo="{!recordName}" />
+    <apex:attribute name="customObjectName" access="global"
+        description="API Name of the custom object that the files will belong to. This object can also be one of the standard objects such as Solutions or Products. For example: 'MyObject__c' or 'Solution'"
+        type="String"  assignTo="{!objName}" />
+    <apex:attribute name="objectId" access="global"
+        description="Id of the parent object for the files. For example this will be the ID of the account object if this component is going to display that account's attachment."
+        type="String"  assignTo="{!objId}" />
+    <!-- Custom Component Definition  -->
+    <apex:pageMessages />
+        
+        
+        <apex:inputHidden id="selectedKeys" value="{!value}" />  
+        <apex:includeScript value="{!URLFOR($Resource.DynaTree, 'jquery/jquery.js' )}" />  
+        <apex:includeScript value="{!URLFOR($Resource.DynaTree, 'jquery/jquery-ui.custom.js' )}" />  
+        <apex:includeScript value="{!URLFOR($Resource.DynaTree, 'jquery/jquery.cookie.js' )}" />  
+        <apex:includeScript value="{!URLFOR($Resource.DynaTree, 'src/jquery.dynatree.js' )}" />  
+          
+        <apex:stylesheet value="{!URLFOR($Resource.DynaTree, 'src/skin/ui.dynatree.css')}" />  
+      
+        <!-- Add code to initialize the tree when the document is loaded: -->  
+        <script type="text/javascript">  
+        $(function(){  
+            // Attach the dynatree widget to an existing <div id="tree"> element  
+            // and pass the tree options as an argument to the dynatree() function:  
+            $("#tree").dynatree({  
+                onActivate: function(node) {  
+                    // A DynaTreeNode object is passed to the activation handler  
+                    // Note: we also get this event, if persistence is on, and the page is reloaded.  
+                    //alert("You activated " + node.data.key);  
+                },  
+                persist: false,  
+                checkbox: {!selectable},  
+                generateIds: false,  
+                classNames: {  
+                    checkbox: "dynatree-checkbox",  
+                    expanded: "dynatree-expanded"  
+                },  
+                selectMode: 3,  
+                children: {!JsonString},  
+                onSelect: function(select, node) {  
+                    // Get a list of all selected nodes, and convert to a key array:  
+                    var selKeys = $.map(node.tree.getSelectedNodes(), function(node){  
+                        return node.data.key;  
+                    });  
+                    //jQuery(document.getElementById("{!$Component.selectedKeys}")).val(selKeys.join(", "));  
+                      
+                    // Get a list of all selected TOP nodes  
+                    var selRootNodes = node.tree.getSelectedNodes(true);  
+                    // ... and convert to a key array:  
+                    var selRootKeys = $.map(selRootNodes, function(node){  
+                        return node.data.key;  
+                    });  
+                },  
+            });
+        });      
+        
+        
+
+  $(function(){
+  
+function getId(){   
+            
+      SBcSoftWareDocViewController.getSessionId(function(result, event){ 
+                
+                if (event.status) { 
+                                  
+                  document.getElementById('sessionid').value= result;
+               
+                } else if (event.type === 'exception') {    
+                    document.getElementById("errors-js").innerHTML = event.message;
+                     
+                } else {
+                    document.getElementById("errors-js").innerHTML = event.message;
+                }
+            }, {escape:true});                                
+    }
+     function getFile(filename){   
+          var myArr = filename;         
+         result = myArr.split(',');
+         filename = result[0];
+         var test = result[1];
+        // alert(test);
+         if(test != 'undefined' && test != 'Record_ID'){
+              //  alert('file'); 
+                    var hasPrivilege = '{!JSENCODE(hasPrivilege)}';
+                            if(hasPrivilege == 'true'){
+                                getId();                      
+                                var fn = "downloadFile('"+filename+"')";             
+                                var t=  setTimeout(function(){downloadFile(filename)},3000);                                   
+                            }else{
+                                parent.location.href = '/apex/SBvErrorPage';           
+                            }
+          
+                        }
+                else{
+                   // alert('Please select File ');
+                    }
+     }
+     function downloadFile(filename){         
+         var sessionid;
+         sessionid = document.getElementById('sessionid').value;       
+         var resVal =sessionid.split(','); 
+         //alert(resVal) ;
+         var userid = resVal[0];
+         var authVal = resVal[1];
+         var ctTime = resVal[2];      
+         var objIdStr =result[1];
+         var objName =result[2];
+         var path = '{!JSENCODE(baseFolder)}'+'/'+objName+'/'+objIdStr+'/'+filename; 
+         var url='{!JSINHTMLENCODE(serviceUrl)}?action=DOWNLOAD&actionui=false';     
+         document.getElementById("userid").value=userid;
+         document.getElementById("path").value=path;
+         document.getElementById("authResult").value=authVal;
+         document.getElementById("ct").value=ctTime;
+         document.forms[2].action = url;
+         document.forms[2].method = "post";
+         document.forms[2].submit(); 
+     
+     //var timeOut =  setTimeout(function(){redirectPage()},4000); 
+      
+         //parent.location.href = '{!JSINHTMLENCODE(baseURL)}/apex/SBvAllFiles?pg=viewall&objName={!JSENCODE($CurrentPage.parameters.objName)}&objId={!JSENCODE($CurrentPage.parameters.objId)}&recordName={!JSENCODE($CurrentPage.parameters.recordName)}';           
+     }   
+    
+     function redirectPage() {
+           // parent.location.href = '{!JSINHTMLENCODE(baseURL)}/{!JSINHTMLENCODE($CurrentPage.parameters.objId)}';
+               location.reload();    
+        }
+    
+    $("#tree").dynatree({
+    
+      onActivate: function(node) {
+       noLink: true;
+        var a = node.data.title;
+         alert('a---'+a);
+        var b = node.data.recId;
+       // alert('b---'+b);
+        var c = node.data.objName;
+         //alert('c---'+c);
+        var id = a+','+b+','+c ;
+        
+        
+          getFile(id);
+      }
+    });
+  });
+  </script>
+    
+    <form name="downloadform" method="post" action="" target="_blank" id ='downloadformid' >
+        <input type="hidden" name="userid" id="userid" /> <input type="hidden"
+            name="path" id="path" /> <input type="hidden" name="authResult"
+            id="authResult" /> <input type="hidden" name="ct" id="ct" />
+    </form>
+
+    <apex:outputPanel rendered="{!pageRender}">
+        
+        <input type="hidden" id="sessionid" name="jsessionid" />
+            </apex:outputPanel>
+        <!-- Add a <div> element where the tree should appear: -->  
+        <div id="tree"> </div> 
+</apex:component>

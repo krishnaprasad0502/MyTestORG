@@ -1,0 +1,32 @@
+<apex:page controller="samplecheck">
+
+<script type="text/javascript">
+
+</script>
+   
+    <apex:form >
+   
+    <apex:pageMessages />
+   
+    <apex:pageBlock >
+        <apex:pageBlockSection columns="2">
+            <apex:pageblockSectionItem >
+                <apex:outputLabel value="Metro"/>
+            </apex:pageblockSectionItem>       
+            <apex:pageblockSectionItem >               
+                <apex:inputCheckbox value="{!metro}">            
+                    <apex:actionSupport event="onchange" reRender="a" action="{!demo}"/>
+                </apex:inputCheckbox>
+            </apex:pageblockSectionItem>
+            <apex:pageblockSectionItem >
+                <apex:outputLabel value="City"/>
+            </apex:pageblockSectionItem>
+            <apex:pageblockSectionItem >
+                <apex:inputCheckbox value="{!city}" id="a" disabled="{!bool}"/>
+            </apex:pageblockSectionItem>           
+        </apex:pageBlockSection>       
+    </apex:pageBlock>
+
+    </apex:form>
+
+</apex:page>

@@ -1,0 +1,22 @@
+<apex:page standardController="Account">
+    <apex:form >
+        <apex:pageBlock id="theBlock">
+           <apex:actionPoller interval="10" >
+            <apex:actionStatus id="theStatus">
+                <apex:facet name="start">
+                    <apex:outputPanel >
+                        <apex:inputCheckbox value="{!Account.myCheckbox__c}" disabled="false"/>
+                               Please wait..6666      
+                    </apex:outputPanel>
+                </apex:facet>
+                <apex:facet name="stop">
+                    <apex:inputCheckbox value="{!Account.myCheckbox__c}">
+                        <apex:actionSupport event="onclick" action="{!QuickSave}" rerender="theBlock" status="theStatus"/>
+                         <apex:image value="{!$Resource.Loading}" width="50" height="50" />
+                    </apex:inputCheckbox>
+                </apex:facet>
+            </apex:actionStatus>
+          </apex:actionPoller>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

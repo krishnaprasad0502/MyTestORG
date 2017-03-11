@@ -1,0 +1,6 @@
+<apex:page sidebar="false">
+    <apex:pageMessage summary="File Uploaded Successfully" severity="info"
+        strength="3" />
+    <apex:pageMessages />
+
+</apex:page>

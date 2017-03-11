@@ -1,0 +1,80 @@
+<apex:page standardController="Contact" showHeader="true" standardStylesheets="true" extensions="DeveloperExtension2" id="page1" >
+<link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.16/themes/redmond/jquery-ui.css" />
+<link rel="stylesheet" type="text/css" href="http://www.trirand.net/aspnetmvc/Content/themes/ui.jqgrid.css" />
+<script type="text/JavaScript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"/>
+<script type="text/javascript" src="http://ajax.microsoft.com/ajax/jquery/jquery-1.7.1.min.js"/>
+<script type="text/javascript" src="http://www.trirand.net/aspnetmvc/Scripts/trirand/i18n/grid.locale-en.js"/>
+<script type="text/javascript" src="http://www.trirand.net/aspnetmvc/Scripts/trirand/jquery.jqGrid.min.js"/>
+    
+<script type="text/JavaScript">  
+    function search(jsonString) {
+        $("#pdata").jqGrid("GridUnload");
+        var gridData;
+        var obj;          
+        gridData=JSON.stringify(jsonString);    
+        obj = JSON.parse(gridData);      
+
+        jQuery("#pdata").jqGrid({
+        data: jsonString,
+        datatype: 'local',
+        colNames:['Name','Email'],
+        colModel:[
+            {name:'Name',index:'Name', width:40},
+            {name:'Email',index:'Email', width:40}],
+        rowNum:10,
+        rowList:[5,10,20,30,50,100, 1000],
+        pager: '#ppdata',
+        sortname: 'name',
+        viewrecords: true,
+        sortorder: "desc",
+        caption:"Contact Data",
+        width: 800,
+        height: 180,   
+    });   
+   $("#pdata").trigger("reloadGrid");
+ }
+
+
+
+function showDataInJqGrid(){
+    alert('Show Contacts');
+    var accName = document.getElementById("query").value;
+    contactSearch(accName);
+}
+
+function contactSearch(name) {
+    var jsonString;
+    DeveloperExtension2.showContacts(name,handleContacts);
+}
+
+function handleContacts(result, event) {
+    if(event.type == 'exception'){
+        alert(event.message);
+    }else{
+        jsonString = result;
+        search(jsonString);
+    }
+}
+</script>
+
+<apex:sectionHeader title="Contact Search using AccountID" subtitle="Search Contact" />
+  <apex:pageBlock mode="maindetail">
+    <apex:form id="qform" >
+            <apex:pageBlockSection title="Search Contact for the Account" collapsible="false" columns="1" >
+                <table width="100%">
+                    <tr>
+                        <td><h3>Enter Account Name </h3>&nbsp;&nbsp;<input type="text" id="query" />&nbsp;&nbsp;&nbsp;
+                            <input type="button" value="Show Contacts " class="btn" onclick="showDataInJqGrid();" />&nbsp;&nbsp;&nbsp;
+                        </td>
+                    </tr>
+                </table>
+            </apex:pageBlocksection>
+    </apex:form>
+
+    <apex:pageBlockSection title="Contacts in Response" collapsible="false" rendered="true">               
+        <div id="response" style="font-size: 16px;width: 300px;font-family: monospace; font-stretch: expanded" />               
+        <table id="pdata"></table>
+        <div id="ppdata"></div>
+    </apex:pageBlocksection>
+  </apex:pageblock>
+</apex:page>

@@ -1,0 +1,6 @@
+<apex:page standardController="Lead" tabStyle="Lead">
+
+    <c:FileList title="{!lead.Name}" customObjectName="Lead"
+        objectId="{!lead.id}" />
+
+</apex:page>

@@ -1,0 +1,66 @@
+<apex:page controller="PNcPOCCaseReportViewNewBB" docType="html-5.0" >
+    <!-- <script>
+        function setFocusOnLoad() {}
+        function validatValue(){  
+              var sDate = new Date(document.getElementById('j_id0:j_id3:accounts:sDate').value);
+              var eDate = new Date(document.getElementById('j_id0:j_id3:accounts:eDate').value);
+              var Status = document.getElementById('j_id0:j_id3:accounts:j_id6').value;
+              
+                                                                 
+                    if(sDate == 'Invalid Date' && eDate == 'Invalid Date' ){
+                         alert('Please choose Date Range');
+                    }else if(sDate == 'Invalid Date'){
+                         alert('Start Date Should not be Blank');
+                         return false;   
+                    }else if(eDate == 'Invalid Date'){
+                         alert('End Date Should not be Blank');
+                    }else if(Date.parse(sDate) > Date.parse(eDate) ){
+                         alert('End Date should be greater than Start Date');
+                    } 
+                                   
+        }
+    </script>-->
+    <apex:define name="body">
+        <apex:form >
+            <apex:sectionHeader title="POC Report Information" subtitle="POC Report Information"/>
+            <apex:pageBlock title="POC Report Information" id="accounts">
+                <apex:pageBlockButtons location="Top">
+                    <apex:outputText value="Status : "/> 
+                    <apex:inputField value="{!casVal.Status}"/>
+                    <apex:outputText value="Start Date : "/> 
+                    <apex:input value="{!sDate}" id="theTextInput" type="date"/>
+                    <apex:outputText value="End Date : "/> 
+                    <apex:input value="{!eDate}" id="theTextInput2" type="date"/>
+                    <apex:commandButton value="Search" action="{!searchCases}" reRender="accounts"/>
+                </apex:pageBlockButtons>         
+                <apex:outputpanel style="overflow:scroll;width:900px;" layout="block"> 
+                
+                <table border ='1'>
+                    <tr>
+                        <apex:repeat value="{!distinctInterval}" var="mon" id="head">
+                            <td >
+                               <APEX:OUtputText >test</APEX:OUtputText> 
+                                                          
+                            </td>
+                        </apex:repeat>
+                    </tr>
+                      <tr>
+                      
+                            <td >
+                               <APEX:OUtputText >test</APEX:OUtputText> 
+                                                          
+                            </td>
+                       
+                    </tr>
+                </table>
+                
+            
+
+    
+                  
+               
+                </apex:outputpanel>
+            </apex:pageBlock> 
+        </apex:form>
+    </apex:define>
+</apex:page>

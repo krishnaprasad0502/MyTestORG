@@ -1,0 +1,56 @@
+<apex:page controller="SBcAccountCreation" sidebar="false" docType="html-5.0">
+     <apex:outputPanel rendered="{!pageRender}">
+        <apex:sectionHeader title="New Account Configuration"
+            subtitle="Step 2 of 2" help="/apex/SBvAcctCreatHelp" />
+        <apex:pageMessages />
+
+        <apex:form html-autocomplete="off" >
+            <apex:pageBlock title="Account Details">
+                <apex:pageBlockSection columns="2" title="* = Required Field"
+                    collapsible="false">
+                    <apex:panelGrid columns="3" id="theGrid" style="align:center;">
+
+                        <apex:outputText value="*" style="color:red;" />
+                        <apex:outputLabel value="Organization Name" for="orgName"
+                            styleClass="labelCol" />
+                        <apex:inputText size="30" id="orgName" value="{!orgName}" />
+
+                        <apex:outputText value="*" style="color:red;" />
+                        <apex:outputLabel value="Bucket Name" for="bucketName"
+                            styleClass="labelCol" />
+                        <apex:inputText size="30" id="bucketName" value="{!bucketName}" />
+
+                        <apex:outputText value="*" style="color:red;" />
+                        <apex:outputLabel value="Encryption Key" for="ekey"
+                            styleClass="labelCol" />
+                        <apex:inputSecret size="20" id="ekey" value="{!encrKey}" />
+                    </apex:panelGrid>
+
+                    <apex:panelGrid columns="3" id="theGrid1" style="align:center;">
+
+                        <apex:outputText value="*" style="color:red;" />
+                        <apex:outputLabel value="Access Key" for="aKey"
+                            styleClass="labelCol" />
+                        <apex:inputSecret size="30" id="aKey" value="{!accessKey}" />
+
+                        <apex:outputText value="*" style="color:red;" />
+                        <apex:outputLabel value="Secret Key" for="sKey"
+                            styleClass="labelCol" />
+                        <apex:inputSecret size="30" id="sKey" value="{!secretKey}" />
+
+                        <apex:outputText value="*" style="color:red;" />
+                        <apex:outputLabel value="Email Id" for="eid" styleClass="labelCol" />
+                        <apex:inputText size="30" id="eid" value="{!emailId}" />
+
+                    </apex:panelGrid>
+                </apex:pageBlockSection>
+                <apex:pageBlockButtons location="bottom">
+                    <apex:commandButton value="<Previous" action="{!previousPage}" />
+                    <apex:commandButton value="Create" action="{!activateUsr}" />
+                    <apex:commandButton value="Cancel" action="{!cancel}" />
+                </apex:pageBlockButtons>
+            </apex:pageBlock>
+
+        </apex:form>
+    </apex:outputPanel>
+</apex:page>

@@ -1,0 +1,7 @@
+<apex:page showHeader="false" sidebar="false">
+<table><tr><td>
+<analytics:reportChart reportId="00O90000006OBzC" size="small" ></analytics:reportChart></td><td>
+<analytics:reportChart reportId="00O90000006OBzC" size="small"></analytics:reportChart></td></tr><tr><td>
+<analytics:reportChart reportId="00O90000006OBzC" size="small"></analytics:reportChart></td><td>
+<analytics:reportChart reportId="00O90000006OBzC" size="small"></analytics:reportChart></td></tr></table>
+</apex:page>

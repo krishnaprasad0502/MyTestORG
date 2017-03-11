@@ -1,0 +1,48 @@
+<apex:page controller="SBcConfiguration" sidebar="false" action="{!isAccountExists}">
+    <apex:outputPanel rendered="{!pageRender}">
+        <apex:sectionHeader title="New Account Configuration"
+            subtitle="Step 1 of 2" />
+        <apex:pageMessages />
+        <apex:form >
+            <apex:pageBlock title="Account selection">
+                <apex:panelGrid columns="1" id="theGrid" style="align:center;">
+
+                    <apex:outputLabel value="Welcome to DataFort!!!" />
+                    <apex:outputLabel value="Now Continue with the account configuration setup." />
+
+                    <apex:selectRadio value="{!acctType}" layout="pageDirection">
+                        <apex:selectOption itemValue="default"
+                            itemLabel="I Wish to use CSS's Amazon account." />
+                        <apex:selectOption itemValue="own"
+                            itemLabel="No thanks, I have my own Amazon account." />
+                        <apex:actionSupport event="onclick" rerender="out" />
+                    </apex:selectRadio>
+
+                    <apex:outputPanel id="out">
+
+
+                        <apex:outputPanel rendered="{!acctType='default'}"
+                            style="padding-left:25px;">
+                            <i>Please send a request via email to salesforce.apps@csscorp.com 
+                                (or) call +1 650 385 2000 / +91 44 6632 2000 to get your credentials. 
+                                Your Credentials will be emailed to you. Once you get your credentials please
+                                click 'Next' to activate your account.</i>
+                        </apex:outputPanel>
+
+                    </apex:outputPanel>
+
+
+                </apex:panelGrid>
+                <apex:pageBlockButtons location="bottom">
+
+                    <apex:commandButton value="Next>" action="{!nextPage}"
+                        disabled="{!disableButtons}" />
+
+                    <apex:commandButton value="Cancel" action="{!cancel}"
+                        disabled="{!disableButtons}" />
+                </apex:pageBlockButtons>
+            </apex:pageBlock>
+
+        </apex:form>
+    </apex:outputPanel>
+</apex:page>

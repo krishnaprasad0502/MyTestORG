@@ -1,0 +1,6 @@
+<apex:page standardController="Opportunity" tabStyle="Opportunity">
+
+    <c:FileList title="{!opportunity.Name}" customObjectName="Opportunity"
+        objectId="{!opportunity.id}" />
+
+</apex:page>

@@ -1,0 +1,12 @@
+<apex:page standardcontroller="Task"  tabStyle="Task" extensions="allTask"> 
+    <apex:pageBlock > 
+        <apex:pageBlockTable Value="{!lstTASKWrapper}" var="slaChildren1" border="1">
+            <apex:column headerValue="id" >                          
+                <apex:OutputText value="{!slaChildren1.SLACName }"/>
+            </apex:column>
+            <apex:column headerValue="subject" >
+                <apex:OutputText value="{!slaChildren1.SLAType }"/>                                      
+            </apex:column> 
+        </apex:pageBlockTable>
+    </apex:pageBlock> 
+</apex:page>

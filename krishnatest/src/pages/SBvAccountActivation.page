@@ -1,0 +1,47 @@
+<apex:page controller="SBcAccountActivation" sidebar="false">
+    <apex:outputPanel rendered="{!pageRender}">
+        <apex:sectionHeader title="New Account Configuration"
+            subtitle="Step 2 of 2" help="/apex/SBvAcctActHelp" />
+        <apex:pageMessages />
+
+        <apex:form >
+            <apex:pageBlock title="Account Details">
+                <apex:pageBlockSection columns="2" title="* = Required Field"
+                    collapsible="false">
+                    <apex:panelGrid columns="3" id="theGrid" style="align:center;">
+
+                        <apex:outputText value="*" style="color:red;" />
+                        <apex:outputLabel value="Username" for="userName"
+                            styleClass="labelCol" />
+                        <apex:inputText size="20" id="userName" value="{!username}" />
+
+                        <apex:outputText value="*" style="color:red;" />
+                        <apex:outputLabel value="Encryption Key" for="ekey"
+                            styleClass="labelCol" />
+                        <apex:inputSecret size="20" id="ekey" value="{!encrKey}" />
+
+                    </apex:panelGrid>
+
+                    <apex:panelGrid columns="3" id="theGrid1" style="align:center;">
+
+                        <apex:outputText value="*" style="color:red;" />
+                        <apex:outputLabel value="Password" for="password"
+                            styleClass="labelCol" />
+                        <apex:inputSecret size="20" id="password" value="{!password}" />
+
+                        <apex:outputText value="*" style="color:red;" />
+                        <apex:outputLabel value="New Password" for="newpassword"
+                            styleClass="labelCol" />
+                        <apex:inputSecret size="20" id="newpassword" value="{!newPwd}" />
+
+                    </apex:panelGrid>
+                </apex:pageBlockSection>
+                <apex:pageBlockButtons location="bottom">
+                    <apex:commandButton value="<Previous" action="{!previousPage}" />
+                    <apex:commandButton value="Activate" action="{!activateUser}" />
+                    <apex:commandButton value="Cancel" action="{!cancel}" />
+                </apex:pageBlockButtons>
+            </apex:pageBlock>
+        </apex:form>
+    </apex:outputPanel>
+</apex:page>
